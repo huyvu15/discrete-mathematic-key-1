@@ -1,0 +1,110 @@
+\documentclass[a5paper]{article}
+\usepackage[utf8]{vietnam}
+\usepackage{lipsum}   % To generate test text
+\usepackage{framed}
+\usepackage{ifthen}
+\usepackage{tikz}
+\usepackage[margin=1cm]{geometry}% for screen preview
+\usetikzlibrary{decorations.pathmorphing,calc,shadows.blur,shadings}
+
+\newcounter{mathseed}
+\setcounter{mathseed}{3}
+\pgfmathsetseed{\arabic{mathseed}} % To have predictable results
+% Define a background layer, in which the parchment shape is drawn
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+% This is the base for the fractal decoration. It takes a random point between the start and end, and
+% raises it a random amount, thus transforming a segment into two, connected at that raised point
+% This decoration can be applied again to each one of the resulting segments and so on, in a similar
+% way of a Koch snowflake.
+\pgfdeclaredecoration{irregular fractal line}{init}
+{
+  \state{init}[width=\pgfdecoratedinputsegmentremainingdistance]
+  {
+    \pgfpathlineto{\pgfpoint{random*\pgfdecoratedinputsegmentremainingdistance}{(random*\pgfdecorationsegmentamplitude-0.02)*\pgfdecoratedinputsegmentremainingdistance}}
+    \pgfpathlineto{\pgfpoint{\pgfdecoratedinputsegmentremainingdistance}{0pt}}
+  }
+}
+
+
+% define some styles
+\tikzset{
+   paper/.style={draw=black!20, blur shadow, every shadow/.style={opacity=1, black}, shading=bilinear interpolation,
+                 lower left=black!20, upper left=black!5, upper right=white, lower right=black!10, fill=none},
+   irregular cloudy border/.style={decoration={irregular fractal line, amplitude=0.2},
+           decorate,
+     },
+   irregular spiky border/.style={decoration={irregular fractal line, amplitude=-0.2},
+           decorate,
+     },
+   ragged border/.style={ decoration={random steps, segment length=7mm, amplitude=2mm},
+           decorate,
+   }
+}
+\def\tornpaper#1{%https://www.overleaf.com/download/project/637dc5d240c06b037fc3e149/build/184a85469d2-338c8698ddd2e5d4/output/output.pdf?compileGroup=standard&clsiserverid=clsi-pre-emp-e2-f-hcg3&enable_pdf_caching=true&popupDownload=true
+\ifthenelse{\isodd{\value{mathseed}}}{%
+\tikz{
+  \node[inner sep=1em] (A) {#1};  % Draw the text of the node
+  \begin{pgfonlayer}{background}  % Draw the shape behind
+  \fill[paper] % recursively decorate the bottom border
+     \pgfextra{\pgfmathsetseed{\arabic{mathseed}}\addtocounter{mathseed}{1}}%
+      {decorate[irregular cloudy border]{decorate{decorate{decorate{decorate[ragged border]{
+        (A.north west) -- (A.north east)
+      }}}}}}
+      -- (A.south east)
+     \pgfextra{\pgfmathsetseed{\arabic{mathseed}}}%
+      {decorate[irregular spiky border]{decorate{decorate{decorate{decorate[ragged border]{
+      -- (A.south west)
+      }}}}}}
+      -- (A.north west);
+  \end{pgfonlayer}}
+}{%
+\tikz{
+  \node[inner sep=1em] (A) {#1};  % Draw the text of the node
+  \begin{pgfonlayer}{background}  % Draw the shape behind
+  \fill[paper] % recursively decorate the bottom border
+     \pgfextra{\pgfmathsetseed{\arabic{mathseed}}\addtocounter{mathseed}{1}}%
+      {decorate[irregular spiky border]{decorate{decorate{decorate{decorate[ragged border]{
+        (A.north east) -- (A.north west)
+      }}}}}}
+      -- (A.south west)
+     \pgfextra{\pgfmathsetseed{\arabic{mathseed}}}%
+      {decorate[irregular cloudy border]{decorate{decorate{decorate{decorate[ragged border]{
+      -- (A.south east)
+      }}}}}}
+      -- (A.north east);
+  \end{pgfonlayer}}
+}}
+
+
+
+
+\begin{document}
+% attention, that background for box when printed has color you want
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\lipsum[11]}
+}
+
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\lipsum[15]}
+}
+
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\lipsum[5]}
+}
+\end{center}
+
+
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textbf{Bài .}}
+}
+\underline{\textbf{Giải}}
+\end{center}
+\end{document}

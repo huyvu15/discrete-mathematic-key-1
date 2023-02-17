@@ -1,0 +1,3564 @@
+\documentclass[12pt,oneside]{book}
+\usepackage[utf8]{vietnam}
+\usepackage[a4paper,left=2.5cm,right=2.5cm, bottom=2.5cm,top=2.5cm]{geometry}
+%Khai báo các gói tại đây
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{amsmath,amsfonts, amssymb,mathptmx,mathrsfs,mathtools}
+%thay đổi độ lùi đầu dòng
+\usepackage{indentfirst}
+\setlength{\parindent}{2cm}
+%package for background
+\usepackage{anyfontsize}
+\usepackage{sectsty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%header and footer for some pages
+\usepackage{fancyhdr}
+\fancypagestyle{header}{%
+	\fancyhf{}
+	
+	%header and footer text
+	\lhead{\textcolor{gray}{Vũ Văn Huy 20216931 MI2 K66}}
+	\rhead{\textcolor{gray}{Date: {~~~/~~~/~~~~}; Page No.: {~~~~}}}
+	\cfoot{\textcolor{gray}{Ha Noi University of Science and Technology}}
+	
+	
+	\renewcommand{\headrulewidth}{0.4pt}
+	\renewcommand{\footrulewidth}{0.4pt}
+	% Save standard definitions
+	\let\HeadRule\headrule
+	\let\FootRule\footrule
+	% Add color to standard definitions.
+	\renewcommand\headrule{\color{gray}\HeadRule}
+	\renewcommand\footrule{\textcolor{gray}{\FootRule}}
+}
+
+%\usepackage{fontawesome}
+
+
+\usepackage{draftwatermark}
+% tùy chỉnh watermark
+\SetWatermarkText{Vũ Huy} %chữ ký chìm
+\SetWatermarkScale{0.5}
+\SetWatermarkAngle{35} % độ nghiêng, để mặc định là 45 độ
+\SetWatermarkColor{red!5} %màu, !15 là độ đậm nhạt 15%
+\SetWatermarkFontSize{10cm}
+
+
+%Gói hộp văn bản
+\usepackage{tikz,tcolorbox,varwidth,multicol} % đã khai báo cái tikz ở đây rồi
+\tcbuselibrary{xparse,hooks,skins,breakable}
+
+
+
+
+% gói lệnh khai báo dòng kẻ
+\usepackage{xhfill} %gói lệnh khai báo tạo dòng kẻ
+
+\usepackage{listings} %chèn code 
+\lstset{frame=tb,
+	language=C++,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3
+}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+
+%%%%%%%%%%%%%%% Les paquets
+
+\usepackage[english]{babel}
+\usepackage[palette=munch]{nexus}
+
+%%%%%%%%%%%%%%%% hyperref
+\usepackage{lipsum}
+\usepackage[verbose]{hyperref}
+\hypersetup{ 
+    hidelinks
+}
+\setlength{\XeTeXLinkMargin}{-1pt}
+%%%%%%%%%%%%%%%%%%%%%
+% đoạn này là code 1 mẩu trang sách
+\usetikzlibrary{decorations.pathmorphing,calc,shadows.blur,shadings}
+
+\newcounter{mathseed}
+\setcounter{mathseed}{3}
+\pgfmathsetseed{\arabic{mathseed}} % To have predictable results
+% Define a background layer, in which the parchment shape is drawn
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+% This is the base for the fractal decoration. It takes a random point between the start and end, and
+% raises it a random amount, thus transforming a segment into two, connected at that raised point
+% This decoration can be applied again to each one of the resulting segments and so on, in a similar
+% way of a Koch snowflake.
+\pgfdeclaredecoration{irregular fractal line}{init}
+{
+  \state{init}[width=\pgfdecoratedinputsegmentremainingdistance]
+  {
+    \pgfpathlineto{\pgfpoint{random*\pgfdecoratedinputsegmentremainingdistance}{(random*\pgfdecorationsegmentamplitude-0.02)*\pgfdecoratedinputsegmentremainingdistance}}
+    \pgfpathlineto{\pgfpoint{\pgfdecoratedinputsegmentremainingdistance}{0pt}}
+  }
+}
+
+
+% define some styles
+\tikzset{
+   paper/.style={draw=black!20, blur shadow, every shadow/.style={opacity=1, black}, shading=bilinear interpolation,
+                 lower left=black!20, upper left=black!5, upper right=white, lower right=black!10, fill=none},
+   irregular cloudy border/.style={decoration={irregular fractal line, amplitude=0.2},
+           decorate,
+     },
+   irregular spiky border/.style={decoration={irregular fractal line, amplitude=-0.2},
+           decorate,
+     },
+   ragged border/.style={ decoration={random steps, segment length=7mm, amplitude=2mm},
+           decorate,
+   }
+}
+
+\def\tornpaper#1{%https://www.overleaf.com/download/project/637dc5d240c06b037fc3e149/build/184a85469d2-338c8698ddd2e5d4/output/output.pdf?compileGroup=standard&clsiserverid=clsi-pre-emp-e2-f-hcg3&enable_pdf_caching=true&popupDownload=true
+\ifthenelse{\isodd{\value{mathseed}}}{%
+\tikz{
+  \node[inner sep=1em] (A) {#1};  % Draw the text of the node
+  \begin{pgfonlayer}{background}  % Draw the shape behind
+  \fill[paper] % recursively decorate the bottom border
+     \pgfextra{\pgfmathsetseed{\arabic{mathseed}}\addtocounter{mathseed}{1}}%
+      {decorate[irregular cloudy border]{decorate{decorate{decorate{decorate[ragged border]{
+        (A.north west) -- (A.north east)
+      }}}}}}
+      -- (A.south east)
+     \pgfextra{\pgfmathsetseed{\arabic{mathseed}}}%
+      {decorate[irregular spiky border]{decorate{decorate{decorate{decorate[ragged border]{
+      -- (A.south west)
+      }}}}}}
+      -- (A.north west);
+  \end{pgfonlayer}}
+}{%
+\tikz{
+  \node[inner sep=1em] (A) {#1};  % Draw the text of the node
+  \begin{pgfonlayer}{background}  % Draw the shape behind
+  \fill[paper] % recursively decorate the bottom border
+     \pgfextra{\pgfmathsetseed{\arabic{mathseed}}\addtocounter{mathseed}{1}}%
+      {decorate[irregular spiky border]{decorate{decorate{decorate{decorate[ragged border]{
+        (A.north east) -- (A.north west)
+      }}}}}}
+      -- (A.south west)
+     \pgfextra{\pgfmathsetseed{\arabic{mathseed}}}%
+      {decorate[irregular cloudy border]{decorate{decorate{decorate{decorate[ragged border]{
+      -- (A.south east)
+      }}}}}}
+      -- (A.north east);
+  \end{pgfonlayer}}
+}}
+%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\pagestyle{empty}
+\begin{tikzpicture}[overlay,remember picture]
+% Background color
+\fill[
+black!2]
+(current page.south west) rectangle (current page.north east);
+% Rectangles
+\shade[
+left color=Dandelion, 
+right color=Dandelion!40,
+transform canvas ={rotate around ={45:($(current page.north west)+(0,-6)$)}}] 
+($(current page.north west)+(0,-6)$) rectangle ++(9,1.5);
+\shade[
+left color=lightgray,
+right color=lightgray!50,
+rounded corners=0.75cm,
+transform canvas ={rotate around ={45:($(current page.north west)+(.5,-10)$)}}]
+($(current page.north west)+(0.5,-10)$) rectangle ++(15,1.5);
+\shade[
+left color=lightgray,
+rounded corners=0.3cm,
+transform canvas ={rotate around ={45:($(current page.north west)+(.5,-10)$)}}] ($(current page.north west)+(1.5,-9.55)$) rectangle ++(7,.6);
+\shade[
+left color=orange!80,
+right color=orange!60,
+rounded corners=0.4cm,
+transform canvas ={rotate around ={45:($(current page.north)+(-1.5,-3)$)}}]
+($(current page.north)+(-1.5,-3)$) rectangle ++(9,0.8);
+\shade[
+left color=red!80,
+right color=red!80,
+rounded corners=0.9cm,
+transform canvas ={rotate around ={45:($(current page.north)+(-3,-8)$)}}] ($(current page.north)+(-3,-8)$) rectangle ++(15,1.8);
+\shade[
+left color=orange,
+right color=Dandelion,
+rounded corners=0.9cm,
+transform canvas ={rotate around ={45:($(current page.north west)+(4,-15.5)$)}}]
+($(current page.north west)+(4,-15.5)$) rectangle ++(30,1.8);
+\shade[
+left color=RoyalBlue,
+right color=Emerald,
+rounded corners=0.75cm,
+transform canvas ={rotate around ={45:($(current page.north west)+(13,-10)$)}}]
+($(current page.north west)+(13,-10)$) rectangle ++(15,1.5);
+\shade[
+left color=lightgray,
+rounded corners=0.3cm,
+transform canvas ={rotate around ={45:($(current page.north west)+(18,-8)$)}}]
+($(current page.north west)+(18,-8)$) rectangle ++(15,0.6);
+\shade[
+left color=lightgray,
+rounded corners=0.4cm,
+transform canvas ={rotate around ={45:($(current page.north west)+(19,-5.65)$)}}]
+($(current page.north west)+(19,-5.65)$) rectangle ++(15,0.8);
+\shade[
+left color=OrangeRed,
+right color=red!80,
+rounded corners=0.6cm,
+transform canvas ={rotate around ={45:($(current page.north west)+(20,-9)$)}}] 
+($(current page.north west)+(20,-9)$) rectangle ++(14,1.2);
+% Year
+\draw[ultra thick,gray]
+($(current page.center)+(5,2)$) -- ++(0,-3cm) 
+node[
+midway,
+left=0.25cm,
+text width=5cm,
+align=right,
+black!75
+]
+{
+{\fontsize{25}{30} \selectfont \bf TOÁN \\[10pt] RỜI RẠC}
+} 
+node[
+midway,
+right=0.25cm,
+text width=6cm,
+align=left,
+orange]
+{
+{\fontsize{72}{86.4} \selectfont 2022}
+};
+% Title
+\node[align=center] at ($(current page.center)+(0,-5)$) 
+{
+{\fontsize{60}{72} \selectfont {{Giải bài tập đề cương}}} \\[1cm]
+{\fontsize{16}{19.2} \selectfont \textcolor{orange}{ \bf Vũ Văn Huy}}\\[3pt]
+20216931\\[3pt]
+MI2 - K66};
+\end{tikzpicture}
+% thêm vào đầu book
+% \include{titlepage}
+\tableofcontents
+
+\newpage
+\chapter*{Mở đầu}
+
+\chapter{Lý thuyết tổ hợp}
+\section{Lý thuyết}
+\noindent Lý thuyết bạn đọc tự tham khảo giáo trình
+% \subsection{đoạn này chưa có gì}
+
+
+\section{Bài tập}
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 1.}} Gọi $P(x)$ là mệnh đề "$x\le4$". Những mệnh đề nào sau đây là mệnh đề luôn ĐÚNG?
+\begin{enumerate}[label = \alph*)]
+    \item $P(0)$
+    \item $P(4)$
+    \item $P(6)$
+\end{enumerate}
+}}
+\underline{\textbf{Giải}}
+\end{center}
+\indent  $\Longrightarrow$ Dễ dàng thấy ngay \textcolor{red}{mệnh đề luôn đúng là a, b}
+
+\begin{center}
+    \noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 2.}} Xác định giá trị ĐÚNG của mỗi mệnh đề sau, nếu mỗi giá trị nhận được là số thực
+\begin{enumerate}
+    \item[a)] $\exists x(x^2 = 2)$
+    \item[b)] $\exists x(x^2 = -1)$
+    \item[c)] $\forall x(x^2 +2 \geq 1)$
+    \item[d)] $\forall x(x^2 \ne x)$
+\end{enumerate}
+}}
+\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}[label = \alph*)]
+    \item $x = \pm \sqrt{2}$
+    \item Không tồn tại
+    \item $R$
+    \item $R / \{1,0\}$
+\end{enumerate}
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 3.}} Cho $p, q$ là các mệnh đề. Hai mệnh đề $(p\to q)\to q$ và $p\lor q$ có tương đương logic không? Vì sao ?}
+}
+\underline{\textbf{Giải}}
+\end{center}
+$(p\to q)\to\ q \Leftrightarrow (\overline{p} \lor q) \to q$
+\\ \indent \hspace{2.3cm} $\Leftrightarrow \overline{\overline{p}\lor q} \lor q$
+\\ \indent\hspace{2.3cm} $\Leftrightarrow p \land \overline{q} \lor q$
+\\ \indent\hspace{2.3cm} $\Leftrightarrow p \land \overline{q} \lor q$
+\\ \indent\hspace{2.3cm} $\Leftrightarrow$ 1 (Luôn nhận giá trị đúng)
+\\ \indent$\Rightarrow$ Không tương đương logic
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 4.}} Cho các mệnh đề $A, B$ và $C$ thỏa mãn $(A\land C) \to (B\land C)$ và $(A\lor C) \rightarrow (B\lor C)$ là các mệnh đề đúng. Chứng minh rằng $A\rightarrow B$ là mệnh đề đúng.}
+}
+\underline{\textbf{Giải}}
+\end{center}
+Giả sử $A \rightarrow B$ là mệnh đề sai
+\\Không mất tính tổng quát chọn A = 1, B = 0
+\\
+$\Longrightarrow$
+$\begin{cases*}
+C = 0 \Rightarrow  A \lor C = 1 \Rightarrow (A \lor C) \Rightarrow (B \lor C) = 0 \\
+C = 1 \Rightarrow B \lor C = 0 
+\end{cases*}$
+$\\
+\Longrightarrow
+\begin{cases*}
+C = 0  \Rightarrow A \land B = 0\\
+C = 1 \Rightarrow B \land C =0
+\end{cases*}$
+$\Longrightarrow (A \land C) \Rightarrow (B \land C) = 0\\
+\Longrightarrow \text{ Giả sử sai } \,A \rightarrow B \text{ đúng}$
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 5.}} Cho $A = \{a, b, c, d\} , B = \{x, y\}$. Xác định
+\begin{enumerate}[label = \alph*)]
+    \item A $\times$ B 
+    \item $(A / B) \times (B\setminus A)$
+    \item $(A \cap B) \cup (A\setminus B)$
+    \item B $\times$ A
+\end{enumerate}
+}}
+\underline{\textbf{Giải}}
+\end{center}
+
+\begin{tcolorbox}[title=\text{Tích Descartes của tập hợp}]
+	 $A\times B = \{(a, b)| a\in A, b\in B\}$
+\end{tcolorbox}
+\begin{enumerate}[label = \alph*)]
+    \item $A \times B = \{(a, x), (a, y), (b, x), (b, y), (c, x), (c, y), (d, x), (d, y) \}.$
+    \item $A \setminus B = \{a, b, c, d\}\\B \setminus A  = \{x, y\}
+    \\ \Rightarrow\ (A / B) \times (B\ A) = A \times B$
+    \item $A \cap B = \varnothing\\ A \setminus B = \{a, b, c, d\}\\ \Rightarrow (A \cap B) \cup ( A \setminus B) = \varnothing  $
+    \item $B \times A = \{(x,a),(x,b),(x,c),(x,d),(y,a),(y,b),(y,c),(y,d) \}$
+\end{enumerate}
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 6.}} Hai tập hợp $(A \times B) \times (C \times D) \text{ và } A \times (B \times C) \times D $ có giống nhau không ? Vì sao?}
+}
+\underline{\textbf{Giải}}
+\end{center}
+\indent Giả sử $A = \{a\}, B = \{b\}, C = \{ c\}, D = \{d\} \\
+( A\times B) \times(C\times D) = \{(a,c),(a,d),(b,c),(b,d)\\
+A\times (B\times C) \times D = \{(a,d),(b,d),(a,d),(c,d)\}\\
+\Longrightarrow \text{Hai tập đã cho không giống nhau}$
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 7.}} Cho A, B, C, D là các tập bất kỳ. Chứng minh
+\begin{enumerate}[label = \alph*)]
+    \item $A \cap (B \setminus C) = (A \cap B) \setminus (A \cap C)$
+    \item $A \cup (B \setminus A) = A \cup B$
+    \item $(A \setminus B) \cup (C\setminus D) = (A\cap C) \setminus (B \cup D)$
+\end{enumerate}
+}}
+\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}[label = \alph*)]
+    \item $A \cap (B \setminus C) = (A \cap B) \setminus (A \cap C)
+    \\+)A \cap (B \setminus C)
+    \\ \Leftrightarrow A \cap (B \cap \overline{C)} = A \cap B \cap \overline{C}
+    \\ +)(A \cap B) \setminus (A \cap C) = A \cap B \cap \overline{A\cap C}
+    \\ \indent \hspace{3.34cm} = A \cap B \cap (\overline{A}\cup \overline{C}
+    \\ \indent \hspace{3.35cm} = (A \cap B \cap \overline{C}) \cup (A\cap B \cap \overline{C})
+    \\ \indent \hspace{3.35cm} = A\cap B \cap \overline{C}
+    \\ \Longrightarrow\ \text{đpcm}$
+    \item $A\cup (B \setminus A) = A \cup B\\
+    \Leftrightarrow A \cup (B \cap \overline{A}) = (A \cup B) \cap (A \cup \overline{A})\\
+    \Leftrightarrow A\cap B 
+    \\ \Longrightarrow \text{đpcm}$  
+    \item $(A\setminus B) \cap (C\setminus D) = (A\cap C) \setminus (B \cup D)\\
+    \Leftrightarrow A \cap \overline{B} \cap C \cap \overline{D}\\
+    \Leftrightarrow A\cap C \cap \overline{B} \cap \overline{D}
+    \Leftrightarrow (A\cap C)  \setminus (\overline{\overline{B}\cap \overline{D}})\\
+    \Leftrightarrow (A \cap C) \setminus (B \cup D)\\
+    \Longrightarrow\text{(đpcm)}$
+\end{enumerate}
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 8.}} Cho $f: R^2 \rightarrow R^2$, xác định bởi $f(x,y) = (x^3-2y;2x+y)$. Hỏi $f$ có đơn ánh , toàn ánh, song ánh không?}
+}
+\underline{\textbf{Giải}}
+\end{center}
+$f(x,y) = (x^2 - 2y; 2x+y)\\\\
+\text{Xét} f(x_1, y_1) = f(x_2, y_2) 
+\begin{cases*}
+    x_1^2 -2y_1 = x_2^2- 2y_2\\
+    2x_1 + y_1 = 2x_2+y_2
+\end{cases*}
+\\
+\\
+\Rightarrow x_1 + x_2 = -1(*)\\
+\Longrightarrow\ \text{Vậy $f$ là toàn ánh song ánh(Do Pt (*) có vô số nghiệm)}$
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 9.}} Cho $f: R \rightarrow R \text{ xác định bởi} f(x) = x^2 - 4x + 6$. Tập $A = [-2;4]$. Xác định $f(A) \text{ và } f\sp{(-1)} (A)$}
+}
+\underline{\textbf{Giải}}
+\end{center}
+$f: R \rightarrow R\\
+f(x) = x^2 - 4x + 6, A = [-2;4]\\
++) f(x) = x^2 - 4x +6\\\\
+\Rightarrow f'(x) = 2x-4 = 0 \Rightarrow x = 2$
+\begin{center}
+	\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+	\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+		\draw    (117,141) -- (418,143) ;
+		%Straight Lines [id:da3060873148939067] 
+		\draw    (154,105) -- (153,254) ;
+		%Straight Lines [id:da7148244743721035] 
+		\draw    (118,179) -- (175,179) -- (416,180) ;
+		%Straight Lines [id:da5236396912828862] 
+		\draw    (189,208) -- (266.16,241.21) ;
+		\draw [shift={(268,242)}, rotate = 203.29] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+		%Straight Lines [id:da8493958481835135] 
+		\draw    (286,243) -- (365.09,218.59) ;
+		\draw [shift={(367,218)}, rotate = 162.85] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+		%Straight Lines [id:da5646182558546216] 
+		\draw    (175,135) -- (175,143) ;
+		%Straight Lines [id:da12969580844811945] 
+		\draw    (175,149) -- (175,158.06) ;
+		%Straight Lines [id:da36286256583000887] 
+		\draw    (175,164) -- (175,173.28) ;
+		%Straight Lines [id:da46506188981318264] 
+		\draw    (175,179) ;
+		%Straight Lines [id:da9073863276762162] 
+		\draw    (175,179) -- (175,185.28) ;
+		%Straight Lines [id:da6051685408029892] 
+		\draw    (375,136) -- (375,144) ;
+		%Straight Lines [id:da43814226527885625] 
+		\draw    (375,150) -- (375,159.06) ;
+		%Straight Lines [id:da9688377148761198] 
+		\draw    (375,165) -- (375,174.28) ;
+		%Straight Lines [id:da7858093111262965] 
+		\draw    (375,182) -- (375,188.28) ;
+		%Straight Lines [id:da9587565229175044] 
+		\draw    (375,194.28) -- (375,202.28) ;
+		\draw (131,116) node [anchor=north west][inner sep=0.75pt]   [align=left] {x};
+		% Text Node
+		\draw (166,116) node [anchor=north west][inner sep=0.75pt]   [align=left] {\mbox{-}2};
+		% Text Node
+		\draw (269,116) node [anchor=north west][inner sep=0.75pt]   [align=left] {2};
+		% Text Node
+		\draw (370,117) node [anchor=north west][inner sep=0.75pt]   [align=left] {4};
+		% Text Node
+		\draw (114,151.4) node [anchor=north west][inner sep=0.75pt]    {$f'( x)$};
+		% Text Node
+		\draw (112,195.4) node [anchor=north west][inner sep=0.75pt]    {$f( x)$};
+		% Text Node
+		\draw (269,154) node [anchor=north west][inner sep=0.75pt]   [align=left] {0};
+		% Text Node
+		\draw (330,152) node [anchor=north west][inner sep=0.75pt]   [align=left] {+};
+		% Text Node
+		\draw (216,156) node [anchor=north west][inner sep=0.75pt]   [align=left] {\mbox{-}};
+		% Text Node
+		\draw (165,191) node [anchor=north west][inner sep=0.75pt]   [align=left] {18};
+		% Text Node
+		\draw (269,235) node [anchor=north west][inner sep=0.75pt]   [align=left] {2};
+		% Text Node
+		\draw (370,208) node [anchor=north west][inner sep=0.75pt]   [align=left] {6};
+	\end{tikzpicture}
+\end{center}
+$\Rightarrow f(A) = [2;18]\\\\
++)f^{-1}(A) = \{x \in R | f(x) \in [-2;4]\}
+\\\\
+f(x) \in [-1;2] \Rightarrow -1 \leq x^2 - 4x +6 \leq 2 \text{ (luôn đúng)}\\\\
+\Rightarrow f^{-1} = R$
+
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 10.}} Đâu là biểu diễn của dãy $\{a_n\}$ biết $a_n = -3a_{n-1}+4a_{n-2}$
+\begin{enumerate}[label = \alph*)]
+    \item $a_n = 0$
+    \item $ a_n = 1$
+    \item $a_n = (-4)^n$
+    \item $a_n = 2(-4)^n+3$
+\end{enumerate}
+}}
+\underline{\textbf{Giải}}
+\end{center}
+Xét phương trình đặc trưng : $t^2+3t-4 = 0
+\begin{cases*}
+    t = -4\\t = 1
+\end{cases*}
+$
+\\ Công thức tổng quát: $a_n = a.1^n+b.(-4)^n$
+\\ Giải hệ: 
+$\begin{cases*}
+    a + b = a_0\\
+    a - 4b = a_1
+\end{cases*}$
+\\Do không biết giá trị của $u_n$. Dựa theo đáp án $\Rightarrow a_n = 2(-4)^n +3$
+==> Đáp án d
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 11.}} Cho $a_n = 2^n +5.3^n, \forall n \in \mathbb{N}$
+\begin{enumerate}[label = \alph*)]
+    \item Tìm $a_0;a_1;a_2;a_3;a_4$
+    \item Chứng minh rằng $a_n = 5a_{n-1} - 6a_{n-2}$
+\end{enumerate}
+}
+}
+\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}[label = \alph*)]
+    \item $a_0 = 6\\
+    a_1 = 17\\
+    a_2 = 49\\
+    a_3 = 143\\
+    a_4 = 421$
+    \item Biển đổi 1 chút ta được $a_n -2a_{n-1} = 3(a_{n-1}-2a_{n-2})\\
+    \Leftrightarrow a_n - 2^n= 3^n(a_1 - 2a_0) = 5.3^n$
+    \\Chuyển vế thu được điều phải chứng minh
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SỬA LẠI Ý a) BÀI 12: ý d chưa xong
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 12.}} Tìm biểu diễn cảu các dãy sau
+\begin{enumerate}[label = \alph*)]
+    \item $a_n = 3a_{n-1}; a_0 = 2$
+    \item $a_n = a_{n-1} +2; a_0 = 3$
+    \item $a_n = a_{n-1} + n; a_0 = 1$
+    \item $a_n = 2na_{n-1}; a_0 = 1$
+\end{enumerate}}
+}
+\underline{\textbf{Giải}}
+\end{center}
+\begin{tcolorbox}[title=Tổng quát]
+	Dưới đây là từng trường hợp đặc biệt
+	$\begin{cases*}
+		a_0 = a\\
+		a_{n} = qa_{n-1} + d, n\geq 1
+	\end{cases*}$
+\end{tcolorbox}
+
+Chú ý: có thể dùng cách truy hồi để chứng minh
+\begin{enumerate}[label = \alph*)]
+    \item $a_0 = 2\\
+    \text{Nếu } q = 1 \Rightarrow 
+    \begin{cases*}
+        a_0 = a\\
+        a_n = qa_{n-1}, n \geq 1
+    \end{cases*}$
+    \\ \text{$a_n$ là cấp số nhân với số hạng đầu $a_1$ = a và công bội bằng q} $\Rightarrow a_n = 2.3^{n}$
+    \\ \textbf{\textcolor{red}{Hoặc: }}
+    \\Công Thức Truy Hồi tuyến tính cấp 1 thuần nhất:
+    \\Xét phương trình đặc trưng: t - 3 = 0 $\Rightarrow $ t = 3
+    \\Nghiệm tổng quát là $a_n = C.3^n$
+    \\Thay $a_0 = 2 \Rightarrow a_n = 2.3^n$
+    \item $a_0 = 3\\
+    \text{Nếu } q = 1 \Rightarrow 
+    \begin{cases*}
+        a_0 = a\\
+        a_n = a_{n-1}+d, n \geq 1
+    \end{cases*}$
+    $\Rightarrow a_n = a+(n-1)d = 3 + (n-1).2 = 2n + 1$
+    \item $a_0 = 1\\
+    a_1 = a_0 +1\\
+    a_2 = a_1 + 2\\
+    a_3 = a_2 + 3\\
+    a_4 = a_3 + 4\\
+    \noindent \text{Cộng vế với vế ta được:}
+    a_n = 1+ 1+2+3+...n = 1+ \dfrac{n(n-1)}{2} 
+    $
+    \item $a_n  = 2na_{n-1}, a_0 = 1
+    \\a_0 =1
+    \\a_1 = 2a_0
+    \\a_2 = 2.2.2a_0
+    \\a_3 = 2.3.2.2.2a_0
+    \\...  
+    \\ a_n = 2^n.1.2.3.4...n.a_0 = 2^n.n!.a_0 = 2^n.n!$
+\end{enumerate}
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 13.}} Tính giá trị của mỗi tổng sau
+\begin{enumerate}[label = \alph*)]
+    \item $\sum_{j=0}^8 (1 + (-1)^j)$
+    \item $\sum_{j=0}^8(3^j-2^j)$
+    \item $\sum_{j=0}^8(2.3^j+3.2^j)$
+    \item $\sum_{j=0}^8(2^{j+1} - 2^j)$
+\end{enumerate}
+}}
+\underline{\textbf{Giải}}
+\end{center}
+\begin{tcolorbox}[title=Công thức]
+	Ta có: $\sum_{j=0}^n x^j  \text{ là tổng dãy cấp số } \lambda \text{ có } u_1 = 1, q = x $
+	\\ Nên là cứ áp dụng công thức cấp số nhân thôi: $S_n = \dfrac{u_1(q^n-1)}{q-1}$
+\end{tcolorbox}
+
+\begin{enumerate}[label = \alph*)]
+    \item $\sum_{j=0}^8 (1 + (-1)^j) = 10$
+    \item $\sum_{j=0}^8(3^j-2^j) = 9330$
+    \item $\sum_{j=0}^8(2.3^j+3.2^j) = 21215$
+    \item $\sum_{j=0}^8(2^{j+1} - 2^j) = 511$
+\end{enumerate}
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 14.}} Tính tổng sau
+\begin{enumerate}
+    \item $\sum_{k=1}^n\dfrac{1}{k(k+1)}$
+    \item $\sum_{k=1}^n k^2$
+    \item $\sum_{k=99}^{200} k^3$
+\end{enumerate}
+}}
+\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}
+    \item $\sum_{k=1}^n\dfrac{1}{k(k+1)} = 1-\dfrac{1}{2}+\dfrac{1}{2}-\dfrac{1}{3}+...\dfrac{1}{n}-\dfrac{1}{n+1}
+    \\\\ = 1-\dfrac{1}{n}$
+    \item $\sum_{k=1}^n k^2 = \dfrac{n(n+1)(2n+1))}{6}  \text{(theo chứng minh quy nạp)} $
+    \item $\sum_{k=99}^{200} k^3 = \sum_{k=99}^{200} k^3 =\sum_{k=99}^{200} \dfrac{k^2(k+1)^2}{4}-\dfrac{k^2-(k-1)^2}{4} \\\\
+    = \sum_{k=99}^{200} \dfrac{k^2(k+1)^2}{4} -\sum_{k=98}^{199}\dfrac{k^2(k+1)^2}{4}\\\\
+    = \dfrac{k^2(k+1)^2}{4}( k=200 )-\dfrac{k^2(k+1)^2}{4}( k = 98)\\\\
+    = \dfrac{200^2.201^2-98^2.99^2}{4} = \dfrac{(200.201+98.99)(200.201-98.99)}{4}\\\\
+    = 380477799$
+\end{enumerate}    
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 15.}} Chứng minh rằng nếu A và B là 2 tập hợp có cùng lực lượng thì $|A| \leq |B| \text{và} |B| \leq |A|$
+}
+}
+\underline{\textbf{Giải}}
+\end{center}
+Ta cần chứng minh có 1 song ánh A $\rightarrow$ B và đồng thời cũng có ánh xạ ngược B $\rightarrow$ A. 
+\\ \noindent Và nó vừa là đơn ánh. 
+\\ \noindent $\Longrightarrow$ đpcm
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 16.}} Chứng minh rằng $A, B, C, D$ là các tập hợp thảo mãn $|A| = |C| \text{và} |B| = |D|$, thì $|A \times B| = |C \times D|$ }
+}
+\underline{\textbf{Giải}}
+\end{center}
+Ý tưởng chứng minh tương tự bài 15.
+
+
+
+
+
+\chapter{Bài toán đếm}
+\addtocontents{toc}{\setcounter{tocdepth}{6}}
+\section{Lý thuyết}
+Bạn đọc tự tham khảo giáo trình hoặc slide của thầy Đoàn Duy Trung
+\section{Bài tập}
+\subsection{Nguyên lý cộng, nguyên lý nhân}
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 1.}} Cho 5 ký tự $A, B, C, D, E$ \\
+\begin{enumerate}[label = \alph*)]
+    \item Có bao nhiêu xâu ký tự có độ dài 4 có thể lập được từ các ký tự đã cho(không cho phép lặp lại ký tự
+    \item Có bao nhiêu xâu ký tự trong (a) bắt đầu bởi từ B ?
+    \item Có bao nhiêu xâu ký tự trong (a) không bắt đầu bởi từ A ?
+\end{enumerate}}
+}
+\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}[label = \alph*)]
+    \item Ví dụ: 
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+        A & D & E & B\\
+    \hline
+    \end{tabular}
+\end{center} 
+    $\bullet$ Chọn 4 phần tử từ 5 tập phần tử $\{A, B, C, D, E\}$ với các ký tự lặp lại chính là một chỉnh hợp. Theo đề bài số cách chọn là $A_5^4 = $ \textcolor{red}{120}
+    \item Ví dụ:
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+        \hline
+            \textcolor{red}{B}&D&E&A  \\
+        \hline
+        \end{tabular}
+    \end{center}
+    \begin{enumerate}[label = $\bullet$]
+        \item Cố định vị trí đầu tiên của xâu kí tự là B.
+        \item Chọn 3 phần tử từ tập 4 phần tử còn lại $\{A, C, D, E\}$ với các ký tự không lặp lại chính là một chỉnh hợp. Theo yêu cầu bài toán số cách chọn là $1.A_4^3 = 24$
+    \end{enumerate}
+    \item Số xâu ký tự mà không bắt đầu từ B là 120 - 24 = 98 (Cách).
+\end{enumerate}
+
+
+
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 2.}} Cho X là tập n phần tử có bao nhiêu bộ có thứ tự (A, B) thỏa mãn $A \subseteq B \subseteq X ?$}
+}
+\underline{\textbf{Giải}}
+\end{center}
+\begin{center}
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,354); %set diagram left start at 0, and has height of 354
+ 
+\draw   (232,151.92) .. controls (232,124.26) and (286.62,101.84) .. (354,101.84) .. controls (421.38,101.84) and (476,124.26) .. (476,151.92) .. controls (476,179.58) and (421.38,202) .. (354,202) .. controls (286.62,202) and (232,179.58) .. (232,151.92) -- cycle ;
+%Shape: Ellipse [id:dp23253212855945704] 
+\draw  [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ] (248,150.42) .. controls (248,132.43) and (292.77,117.84) .. (348,117.84) .. controls (403.23,117.84) and (448,132.43) .. (448,150.42) .. controls (448,168.41) and (403.23,183) .. (348,183) .. controls (292.77,183) and (248,168.41) .. (248,150.42) -- cycle ; 
+\draw  [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ] (266,150.92) .. controls (266,139.83) and (295.1,130.84) .. (331,130.84) .. controls (366.9,130.84) and (396,139.83) .. (396,150.92) .. controls (396,162.01) and (366.9,171) .. (331,171) .. controls (295.1,171) and (266,162.01) .. (266,150.92) -- cycle ;
+
+\draw (284,142) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+\draw (406,143) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+\draw (451,143) node [anchor=north west][inner sep=0.75pt]   [align=left] {X};
+
+
+\end{tikzpicture}
+
+\end{center}
+Gọi $a_i$ là phần tử X (i = $\overline{1, n}$)
+\\Xét $a_i$ có 3 trường hợp:
+\begin{enumerate}[label = +)]
+    \item Thuộc A \\$\Rightarrow$ tạo ra bộ (A chứa $a_i$, B chứa $a_i$)
+    \item Thuộc B, Không thuộc A\\
+    $\Rightarrow$ tạo ra bộ (A không chứa $a_i$, B không chứa $a_i$)
+    \item Thuộc x, Không thuộc B\\
+    $\Rightarrow$ tạo ra bộ (A không chứa $a_i$, B không chứa $a_i$)
+    $\Leftrightarrow$ mỗi phần tử $a_i$ tạo ra 3 bộ (A, B). AD nguyên lí nhân cho phần tử $a_i$
+    \\ $\Rightarrow$ Số hộ (A, B) là $3^n$(bộ)
+\end{enumerate}
+\NewTCBox{\tcboxline}{O{red}O{}}
+{%
+	enhanced,
+	on line,
+	arc=3pt,
+	colback=white!95!#1,
+	colframe=#1,
+	before upper={\rule[-3pt]{0pt}{10pt}},
+	boxrule=.5pt,
+	boxsep=0pt,
+	left=3pt,
+	right=3pt,
+	top=2pt,
+	bottom=2pt,
+	#2,}
+
+\tcboxline[teal][fuzzy halo=0.5mm with teal]{\textbf{ĐỐI VỚI TRƯỜNG HỢP LÀ TẬP CON THỰC SỰ}}\\
+\indent X có n phần tử $\Rightarrow C_n^k$ tập có k phần tử X 
+\\ Số tập con B thực sự của X: $\displaystyle\sum_{k=1}^{n-1}C_n^k$
+
+(Không lấy k = 0, k = n do là tập con thực sự (B $\ne \varnothing$ và B $\ne n$)
+\\
+\\
+Với tập B có k phần tử thì tập con A thực sự của B là $2^k-1$(trừ A = B)
+\\
+$\Rightarrow$ Số phần tử cần tìm:\\
+\begin{center}
+\begin{itemize}
+    \item[=] $\displaystyle\sum_{k=1}^{n-1}C_n^k(2^k-1)$
+    \item[=] $\displaystyle\sum_{k=0}^{n-1}C_n^k(2^k-1) - 2^n -1)$
+    \item[=] $3^n-2^n-2^n+1$
+    \item[=] $3^n-2^{n+1}+1 $
+\end{itemize}
+\end{center}
+
+
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 3.}} Đoàn chủ tịch của một cuộc họp gồm 6 người $A, B, C, D, E, F$ cần bầu ra ban lãnh đạo gồm 1 chủ tịch, 1 phó chủ tịch và 1 thư ký.
+\begin{enumerate}[label = \alph*)]
+    \item Hỏi có bao nhiêu cách khác nhau?
+    \item Có bao nhiêu cách mà trong đó một trong hai người A, B là chủ tịch ?
+    \item Có bao nhiêu cách mà trong đó E là thành viên của ban lãnh đạo ?
+    \item Có bao nhiêu cách mà trong đó D và F là thành viên ban lãnh đạo ?
+\end{enumerate}}
+}
+\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}[label =\alph*)]
+\item Ví dụ:
+\begin{center}
+    \begin{tabular}{|c|c|c|}
+         \hline
+         A&D&E  \\
+         \hline
+    \end{tabular}
+\end{center}
+Số cách chọn ra 3 người phần biệt từ tập 6 người là $A_3^6$ = \textcolor{red}{120}
+    \item \indent\vspace{0.2cm}
+    \begin{enumerate}[label = $\bullet$]
+        \item Nếu A là chủ tịch, thì cần chọn 2 người 1 phó chủ tịch và 1 thư ký) từ 5 người còn lại $\{B, C, D, E, F\}$. Số cách chọn là $A_2^5$.
+        \item Do vài trò của A và B là như nhau nên số cách chọn khi A là chủ tịch hay B là chủ tịch là như nhau. Do đó, số cách thỏa mãn yêu cầu bài toán là 2.$A_5^2 $ = \textcolor{red}{40}
+    \end{enumerate}
+    \item Ví dụ:
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+             \hline
+             E&D&A  \\
+             \hline
+        \end{tabular}
+    \end{center}
+    \begin{itemize}
+        \item Chọn ví trí trong ban lãnh đạo cho E có 3 vị trí (chủ tịch hoặc phó chủ tịch hoặc thư ký).
+        \item Chọn 2 người vào 2 vị trí còn lại từ 5 tập người còn lại $\{A, B, C,D,E\}$ có cách là $a_5^2$
+        \item Theo nguyên lý nhân số cách thỏa mãn yêu cầu bài toán là : 3.$A_5^2$ = \textcolor{red}{60}.
+    \end{itemize}
+    \item Ví dụ:
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+        \hline
+             \textcolor{red}{D}&\textcolor{red}{F}&A  \\
+        \hline
+        \end{tabular}
+    \end{center}
+    \begin{enumerate}[label = $\bullet$]
+        \item Chọn 2 vị trí trong ban lãnh đạo cho D và F. Số cách là $C_3^2$
+        \\ Do vai trò của D và F là như nhau  nên chúng có thể hoán vị các chức danh cho nhau. Số cách là 2!
+        \item Chọn vị trí còn lại trong ban lãnh đạo từ tập 4 con người còn lại $\{A, B, C, E\}$. Số cách là $A_4^1$.
+        \item Theo nguyên lý nhân. Số cách thỏa mãn yêu cầu bài toán là: $(2!.C_3^2).A_4^1   = $ \textcolor{red}{24}.
+    \end{enumerate}
+\end{enumerate}
+
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 4.}} Có bao nhiêu xâu nhị phân có độ dài 10 bắt đầu bởi hoặc là 101 hoặc 111?}
+}
+\underline{\textbf{Giải}}
+\end{center}
+Ví dụ:
+\begin{center}
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+    \hline
+     \textcolor{red}{1}&\textcolor{red}{0}&\textcolor{red}{1}&1&0&0&0&0&0&0  \\
+     \hline
+     \textcolor{red}{1}&\textcolor{red}{1}&\textcolor{red}{1}&0&0&0&0&0&0&1\\
+     \hline
+\end{tabular}
+\end{center}
+$\bullet$ Xâu nhị phân (Chỉ gồm bít 0 và 1) bắt đầu bởi 101.
+\begin{enumerate}[label = $\star$]
+    \item Ba vị trí đầu của xâu là 101 nên xâu 10 \textit{bít} còn lại 10-3 = 7 \textit{bít}.
+    \item Do mỗi ô trong 7 ô đó đều có 2 cách chọn (Chọn 0 hoặc 1) nên theo nguyên lý nhân, số cách chọn là $2^7.$
+\end{enumerate}
+$\bullet$ Xâu nhị phân (Chỉ gồm bít 0 và 1) bắt đầu bởi 111.
+\begin{enumerate}[label = $\star$]
+    \item Ba vị trí đầu xâu là 111 nên xâu 10 bít còn lại 10 - 3 = 7 bít.
+    \item Do mỗi ô trong 6 ô đó đều có 2 cách chọn(chọn 0 hoặc 1) nên theo nguyên lý nhân, số cách chọn là $2^7.$
+\end{enumerate}
+$\bullet$ Theo nguyên lý cộng, số xâu nhị phân thỏa mãn yêu cầu là: $2^7 + 2^7$ = \textcolor{red}{256}.
+
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 5.}} Có 10 cuốn sách khác nhau, trong đó có 5 cuốn thuộc lĩnh vực Tin học, 3 cuốn Toán học, 2 cuốn nghệ thuật. Hỏi có bao nhiêu cách chọn ra 2 cuốn sách có nội dung thuộc các lĩnh vực khác nhau từ 10 cuốn sách nói trên?}
+}
+\underline{\textbf{Giải}}
+\end{center}
+
+
+$\bullet$ Chọn 2 cuốn sách(1 cuốn Tin Học và 1 cuốn Toán Học)
+\begin{enumerate}[label = $\star$]
+    \item Chọn 1 cuốn Tin Học từ tập 5 cuốn sách Tin Học, có số cách là $C_3^1$.
+    \item Chọn 1 cuốn Toán Học từ tập 3 cuốn sách Toán Học, có số cách là $C_3^1$.
+    \item Theo nguyên lý nhân, số cách chọn là $C_5^1.C_5^1$ = 15.
+\end{enumerate}
+$\bullet$ Chọn 2 cuốn sách (1 cuốn Toán Học và 1 cuốn Nghệ Thuật)
+\begin{enumerate}[label = $\star$]
+    \item Chọn 1 cuốn Toán học từ tập 3 cuốn sách Toán Học, có số cách là $C_3^1$.
+    \item Chọn 1 cuốn Nghệ Thuật từ tập 2 cuốn sách Nghệ Thuật, cố số cách là $C_2^1$.
+    \item Theo nguyên lý nhân, số cách chọn là $C_3^1.C_2^1$ = 6.
+\end{enumerate}
+$\bullet$ Chọn 2 cuốn sách(1 cuốn Nghệ Thuật và 1 cuốn Tin Học)
+\begin{enumerate}[label = $\star$]
+\item Chọn 1 cuốn Nghệ Thuật từ tâp 2 cuốn sách Nghệ Thuật, có số cách chọn là $C_2^1$.
+\item Chọn 1 cuốn Tin Học từ tập 5 cuốn sách Tin Học, có số cách là $C_5^1$.
+\item Theo nguyên lý nhân, số cách chọn thỏa mãn yêu cầu là: 15 + 6 + 10 = \textcolor{red}{31}
+\end{enumerate}
+
+\begin{center}
+\noindent
+\tornpaper{
+\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 6.}} Có 10 cuốn sách khác nhau, trong đó 5 cuốn Tin học, 3 cuốn Toán học và 2 cuốn nghệ thuật
+\begin{enumerate}[label = \alph*)]
+    \item Hỏi có bao nhiêu cách xếp 10 cuốn này ên giá sách?
+    \item Hỏi có bao nhiêu cách xếp 10 cuốn này lên 1 giá sách sao cho tất  cả các cuốn sách Tin học được xếp ở phía trái giá sách còn hai cuốn sách về nghệ thuật được xếp bên phải?
+    \item Có bao nhiêu cách xếp 10 cuốn sách này lên 1 giá sách sao cho tất cả các cuốn sách thuộc cùng lĩnh vực được xếp cạnh nhau?
+    \item Hỏi có bao nhiêu cách xếp 10 cuốn sách này lên  1 giá sách sao cho hai cuốn sách nghệ thuật không được xếp cạnh nhau
+\end{enumerate}}}
+\underline{\textbf{Giải}}
+\end{center}
+
+\begin{enumerate}[label = \alph*)]
+\item 
+\begin{itemize}
+	\item Khi xếp lên giá thì 10 cuốn sách là như nhau, nên chúng có thể đổi chỗ cho nhau được.
+	\item Số cách chính là số hoán vị của 10 phần tử hay \textcolor{red}{10!}
+\end{itemize}
+\item Ví dụ:
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+		\hline
+		\textcolor{red}{Tin}&\textcolor{red}{Tin}&\textcolor{red}{Tin}&\textcolor{red}{Tin}&\textcolor{red}{Tin}&Toán&Toán&Toán&\textcolor{cyan}{Nghệ Thuật}&\textcolor{cyan}{Nghệ Thuật}  \\
+		\hline
+	\end{tabular}
+\end{center}
+\begin{itemize}
+	\item Do vai trò của 5 cuốn sách Tin Học là như nhau nên chúng có thể hoán vị cho nhau. Số cách xếp 5 cuốn sách Tin Học ở bên trái là 5!.
+	\item Do vai trò của 2 cuốn sách Nghệ Thuật là như nhau nên chúng có thể hoán vị cho nhau. Số cách xếp lại 3 cuốn sách Nghệ Thuật ở bên phải là 2!.
+	\item Do chỉ có 10 vị trí, nhưng xếp bên trái 5 vị trí cho Toán Học, bên phải 2 vị trí cho Nghệ Thuật nên còn lại 3 cuốn sách Toán Học sẽ tự đặt vào giữa giá sách.
+	\begin{itemize}
+		\item Số cách xếp 3 cuốn sách Toán Học là 3!.
+	\end{itemize}
+	\item Theo nguyên lý nhân, số cách phân chia công việc thỏa mãn yêu cầu bài toán là 5!.3!.2! = \textcolor{red}{1440}.
+\end{itemize}
+\item Ví dụ:
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+		\hline
+		\textcolor{red}{Tin}&\textcolor{red}{Tin}&\textcolor{red}{Tin}&\textcolor{red}{Tin}&\textcolor{red}{Tin}&Toán&Toán&Toán&\textcolor{cyan}{Nghệ Thuật}&\textcolor{cyan}{Nghệ Thuật}  \\
+		\hline
+	\end{tabular}
+\end{center}
+\begin{itemize}
+	\item Coi 5 cuốn sách Tin Học là phần tử X $\Rightarrow$ Số cách xếp 5 cuốn sách Tin Học trong X là 5!.
+	\item Coi 3 cuốn sách Toán Học là phần tử Y $\Rightarrow$ Số cách xếp 3 cuốn Toán Học trong Y là 3!.
+	\item Coi 2 cuốn Nghệ Thuật là phần tử Z $\Rightarrow$ Số cách xếp X, Y, Z vào 3 vị trí là 3!.
+	\item Theo nguyên lý nhân, số cách xếp thỏa mãn yêu cầu bài toán là (5!.3!.2!).3! = \textcolor{red}{8640}.
+\end{itemize}
+\item Ví dụ:
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+		\hline
+		Tin&Toán&Tin&Toán&Tin&Tin&Toán&Tin&\textcolor{cyan}{Nghệ Thuật}&\textcolor{cyan}{Nghệ Thuật}  \\
+		\hline
+	\end{tabular}
+\end{center}
+\begin{itemize}
+	\item Coi 2 cuốn sách Nghệ Thuật là phần tử X $\Rightarrow$ Số cách xếp 2 cuốn sách Nghệ Thuật trong X là 2!.
+	\item Xếp 8 cuốn sách còn lại(5 cuốn sách Tin Học và 3 cuốn sách Toán Học) cùng với X vào 9 vị trí $\Rightarrow$ Số cách xếp chúng là 9!.
+	\item Theo nguyên lý nhân, số cách xếp thỏa mãn là 2!.9!
+\end{itemize}
+\end{enumerate}
+
+\begin{center}
+\noindent
+\tornpaper{
+	\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 7.}} Có bao nhiêu số có bốn chữ số có thể tạo thành từ các chữ số 0, 1, 2, 3, 4, 5 thỏa mãn
+		\begin{enumerate}
+			\item Không có chữ số nào được lặp lại
+			\item Các chữ số được lặp lại
+			\item Các số chẵn trong (b)
+	\end{enumerate}}
+}
+\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}[label = \alph*)]
+\item \indent Ví dụ:\hspace{5cm}
+\begin{tabular}{|c|c|c|c|}
+	\hline
+	1&0&2&3 \\
+	\hline 
+\end{tabular}
+\begin{itemize}
+	\item Gọi số cần tìm là $\overline{a_1a_2a_3a_4}$, trong đó $a_i \ne a_j$ và $a_1 \ne 0$. Có  $a_i \in$ X = $\{0, 1, 2, 3, 4, 5\}$
+	\begin{itemize}
+		\item Do $a_i \ne 0$ nên $a_1 \in $ {1, 2, 3, 4, 5}. Số cách chọn là $a_1$ là 5.
+		\item Do không có chứ số nào được lặp lại nên ta cần lấy ra 3 chữ số cho $a_2, a_3, a_4$ từ tập gồm 5 chữ số X \ {$a_1$}. số cách chọn là $A_5^3$.
+	\end{itemize}
+	\item Theo nguyên lý nhân, số cách chọn thỏa mãn là 5.$A_3^5$ = 300.
+\end{itemize}
+\item 
+\begin{itemize}
+	\item Gọi số cần tìm là $\overline{a_1a_2a_3a_4}$, trong đó $a_i \ne a_j$ và $a_1 \ne 0$. Có  $a_i \in$ X = $\{0, 1, 2, 3, 4, 5\}$
+	\begin{itemize}
+		\item Do $a_i \ne 0$ nên $a_1 \in $ {1, 2, 3, 4, 5}. Số cách chọn là $a_1$ là 5.
+		\item Do các chữ số có thể được lặp lại, nên mỗi chữ số $a_2,a_3,a_4$ đều có 6 cách chọn từ tập X. Do đó số cách chọn bộ $(a_2,a_3,a_4)$ là $6^3$.
+	\end{itemize}
+	\item Theo nguyên lý nhân, số cách chọn thỏa mãn là 5.$6^3$ = 1080.
+\end{itemize}
+\item 
+\begin{itemize}
+	\item Gọi số cần tìm là $\overline{a_1a_2a_3a_4}$, trong đó $a_i \ne a_j$ và $a_1 \ne 0$. Có  $a_i \in$ X = $\{0, 1, 2, 3, 4, 5\}$
+	\item Do số cần tìm chẵn nên $a_4\in \{0,2,4\}$. Số cách chọn $a_4$ là 3.
+	\begin{itemize}
+		\item Do $a_i \ne 0$ nên $a_1 \in $ {1, 2, 3, 4, 5}. Số cách chọn là $a_1$ là 5.
+		\item Do các chữ số có thể được lặp lại, nên mỗi chữ số $a_2,a_3$ đều có 6 cách chọn từ tập X. Do đó, số cách chọn bộ $a_2,a_3)$ là $6^3$.
+	\end{itemize}
+	\item Theo nguyên lý nhân, số cách chọn thỏa mãn yêu cầu bài toán là: 5.$6^2$.3 = 540
+\end{itemize}
+\item 
+\begin{itemize}
+	\item Gọi số cần tìm là $\overline{a_1a_2a_3a_4}$, trong đó $a_i \ne a_j$ và $a_1 \ne 0$. Có  $a_i \in$ X = $\{0, 1, 2, 3, 4, 5\}$
+	\item Do số cần tìm chẵn nên $a_4 \in \{0,2,4\}$.
+	\item Nếu $a_4 = 0$
+	\begin{itemize}
+		\item Do số tạo thành không có chữ số nào lặp lại nên ta cần lấy ra 3 chữ số cho $a_1,a_2,a_3$ từ tập gốc 5 chữ số X \ $\{0\}$. Số cách chọn là $A_5^3$.
+		\item Theo nguyên lý nhân, số cách chọn trong trường hợp này là: $A_5^3$.
+	\end{itemize}
+	\item Nếu $a_4 \in \{2,4\}$
+	\begin{itemize}
+		\item Số cách chọn $a_4$ là 2.
+		\item Do $a_i \ne 0$ nên $a_1 \in X \ \{0,a_4\}$. Số cách chọn $a_1$ là 4.
+		\item Do không có chữ số nào được lặp lại nên ta cần lấy ra 2 chữ số cho $a_2, a_3$ từ tập gồm 4 chữ số X \ $\{a_1, a_4\}$. Số cách chọn là $A_4^2$.
+		\item Theo nguyên lý nhân, số cách chọn trong trường hợp này là: 4.$A_4^2$.2 = 96.
+	\end{itemize}
+	\item Theo nguyên lý cộng, số các chọn thỏa mãn yêu cầu là $A_5^3$ +96 = 156.
+\end{itemize}
+\end{enumerate}
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 8.}} Trên cạnh bên của một tam giác ta lấy n điểm, trên cạnh bên thứ hai ta lấy m điểm. Mỗi một trong hai đỉnh của cạnh đáy được nối với các điểm được chọn trên cạnh bên đối diện bởi các đường thằng. Hỏi
+			\begin{enumerate}[label = \alph*)]
+				\item Có bao nhiêu giao điểm của các đường thẳng nằm trong tam giác?
+				\item Các đường thẳng chia tam giác ra làm bao nhiêu phần?
+		\end{enumerate} }
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}
+	\item \indent \vspace{0.5cm}
+	\begin{center}
+		\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+		\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+			%uncomment if require: \path (0,354); %set diagram left start at 0, and has height of 354
+			\draw    (289,74) -- (200,220) ;
+			\draw    (289,74) -- (361,218) ;
+			\draw    (361,218) -- (200,220) ;
+			\draw [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ]   (252,133) -- (361,218) ;
+			\draw [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ]   (361,218) -- (225,180) ;
+			\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (310,118) -- (200,220) ;
+			\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (334,166) -- (200,220) ;
+			\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ][line width=3] [line join = round][line cap = round] (239,184) .. controls (237.21,184) and (238.1,182.1) .. (240,184) ;
+			\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ][line width=3] [line join = round][line cap = round] (274,151) .. controls (274,150.53) and (274.53,150) .. (275,150) ;
+			\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ][line width=3] [line join = round][line cap = round] (269,192) .. controls (267.37,192) and (269,193.5) .. (269,192) ;
+			\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ][line width=3] [line join = round][line cap = round] (307,176) .. controls (307.67,176) and (308.33,176) .. (309,176) ;
+			\draw (282,52) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,opacity=1 ] [align=left] {A};
+			\draw (175,203) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,opacity=1 ] [align=left] {B};
+			\draw (372,203) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,opacity=1 ] [align=left] {C};
+			\draw (161,127) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,opacity=1 ] [align=left] {m điểm};
+			\draw (351,128) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ] [align=left] {n điểm};
+		\end{tikzpicture}
+	\end{center}
+	\begin{itemize}
+		\item Giả sử đỉnh ở đáy là B và C. Trên cạnh AB lấy m điểm. Trên cạnh AC lấy n điểm.
+		\item Nối điểm B với n điểm trên cạnh AC ta được n đường thẳng.
+		\item Nối điểm C với m điểm trên cạnh AB ta được m đường thẳng.
+		\begin{itemize}
+			\item  Mỗi đường đi qua C không song song với bất kỳ đường nào trong n đường kia sẽ cắt n đường kia tại n giao điểm nằm trong tam giác.
+			\item  Do có tất cả m đường đi qua C, nên số giao điểm nằm trong tam giác là \textcolor{red}{n.m}
+		\end{itemize}
+	\end{itemize}
+	\item \begin{itemize}
+		\item Kẻ m đường thẳng qua điểm C sẽ chia $\triangle ABC$ ra thành m + 1 phần.
+		\item Ta thấy n đường thẳng qua B chia một phần (Trong m + 1 phần) ra thành n + 1 phần nhỏ.
+		\item Do có tất cả m + 1 phần nên tam giác sẽ được chia ra làm: \textcolor{red}{(m+1).(n+1)} phần.
+	\end{itemize}
+\end{enumerate}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 9.}} Một cán bộ tin học do đãng trí nên đã quen mật khẩu của phần mềm máy tính của mình. May mắn anh ta có nhớ mật khẩu có dạng NNNXX, trong đó bộ NNN là các chữ số. XX là các chữ cái lấy trong bảng 26 chữ cái. Hỏi trong trường hợp xấu nhất cần phải thử bao nhiêu trường hợp để tìm lại được mật khẩu?}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Ví dụ: \hspace{5cm}
+\begin{tabular}{|c|c|c|c|c|}
+	\hline
+	\textcolor{red}{0}&\textcolor{red}{1}&\textcolor{red}{0}&\textcolor{cyan}{A}&\textcolor{cyan}{A}  \\
+	\hline
+\end{tabular}
+\begin{itemize}
+	\item Ta có tập các chữ số có 10 phần tử là $\{0,1,2,3,4,5,6,7,8,9\}$
+	\item Ta có tập các chữ cái có 26 phần tử.
+	\item Mật khẩu có chứa 3 chữ số NNN (có thể lặp lại)
+	\begin{itemize}
+		\item Mỗi chữ số N trong mật khẩu có 10 cách chọn từ tập $\{0,1,2,3,4,5,6,7,8,9\}$.
+		\item Theo nguyên lý nhân, Số cách chọn cho NNN là $10^3$
+	\end{itemize}
+	\item Mật khẩu có chứa 2 chữ cái XX (có thể lặp lại)
+	\begin{itemize}
+		\item Mỗi chữ cái X trong mật khẩu có 26 cách chọn.
+		\item Theo nguyên lý nhân, số cách chọn cho XX là $26^2$.
+	\end{itemize}
+	\item Số trường hợp xấu nhất cần phải thử cũng chính là số lượng mật khẩu có thể có. Số mật khẩu có thể có đó là \textcolor{red}{$10^3.26^2$}.
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 10.}} Hỏi có bao nhiêu bộ có thứ tự gồm 3 tập $X_1, X_2, X_3 \text{ thỏa mãn }\\
+			\noindent \hspace{1cm}X_1 \cup X_2 \cup X_3 = \{1;2;3;4;5;6;7;8\} \text{ Và } X_1 \cap X_2 \cap X_3 = \emptyset \\
+			\text{Lưu ý: Hai bộ}\\ 
+			\indent \hspace{1cm} X_1 = \{1;2;3\}, X_2 = \{1;4;8\}, X_3 = \{2;5;6;7\}\\ %%%%%%% 
+			\text{Và}\\
+			\indent \hspace{1cm}X_1 = \{1;4;8\}, X_2 = \{1;2;3\}, X_3 = \{2;5;6;7\}$
+			\\Là khác nhau
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{itemize}
+	\item Do $X_1\cup X_2 \cup X_3 = \varnothing$ nên mội phần tử $a_i$ chỉ thuộc \textcolor{red}{tối đa} là 1 tập hợp.
+	\item Xét 1 phần tử $a_i \in X_1 \cap X_2 \cap X_3 = \{1,2,3,4,5,6,7,8\}$ bất kỳ
+	\begin{itemize}
+		\item Nếu $a_i$ chỉ thuộc 1 tập thì nó có 3 cách chọn (Hoặc $X_1,X_2,X_3)$
+		\item Nếu $a_i$ thuộc 2 tập hpwj thì có $C_3^2$ cách chọn vị trí cho $a_i$.
+		\item Nếu $a_i \notin X_j$ với j = 1,2,3 thì vô lý. Do $a_j \in X_1\cap X_2 \cap X_3. $
+		\item Theo nguyên lý cộng, số cách xếp chỗ cho $a_j$ là 3 + $C_3^2$ = 6.
+	\end{itemize}
+	\item Do $a_j$ có thể là một trong số $\{1,2,..7,8\}$ nên số bộ có thứ tự $X_1, X_2, X_3)$ là $6^8$ = \textcolor{red}{1679616}.
+\end{itemize}
+\subsection{Nguyên lý bù trừ}
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 11.}} Có bao nhiêu hoán vị của các chữ cái trong xâu ABCDEF mà trong đó có chứa xâu con DEF ?
+	}}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{itemize}
+	\item  Coi xâu con DEF là phần tử X. 
+	\item  Xếp ABCX vào 4 vị trí, số các hoán vị có thể có là 4!
+	\item Số các hoán vị chứa xâu con DEF chính là số các hoán vị của xâu ABCX. Số các hoán vị thỏa mãn yêu cầu bài toán là 4! = \textcolor{red}{24}.
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 12.}} Có bao nhiêu hoán vị của các chữ cái trong xâu ABCDEF mà trong đó có chứa ba chữ cái D, E, F đứng cạnh nhau ?}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{itemize}
+	\item Coi 3 chữ cái D, E, F đứng cạnh nhau là phần tử X.
+	\begin{itemize}
+		\item Do vai trò của D, E, F như nhau nên số các cách xếp có thể có của X là 3!
+	\end{itemize}
+	\item Xếp A, B, C, X vào 4 vị trí, số hoán vị có thể là 4!.
+	\item Theo nguyên lý nhân, số các hoán vị thảo mãn yêu cầu bài toán là 3!.4! = \textcolor{red}{144}.
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 13.}}  Có bao nhiêu cách xếp 6 người vào ngồi quanh cái bàn tròn (hai cách xếp không coi là khác nhau nếu chúng có thể thu được từ nhau bởi phép quay bàn tròn) ?}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\indent Ví dụ: Xét cách xếp 3 người A, B, C quanh một bàn tròn như sau được coi là một.
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\begin{center}
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+	\draw  [fill={rgb, 255:red, 184; green, 233; blue, 134 }  ,fill opacity=1 ] (105,156) .. controls (105,127.28) and (128.28,104) .. (157,104) .. controls (185.72,104) and (209,127.28) .. (209,156) .. controls (209,184.72) and (185.72,208) .. (157,208) .. controls (128.28,208) and (105,184.72) .. (105,156) -- cycle ;
+	%Shape: Circle [id:dp41640791397794863] 
+	\draw  [fill={rgb, 255:red, 184; green, 233; blue, 134 }  ,fill opacity=1 ] (271,157) .. controls (271,128.28) and (294.28,105) .. (323,105) .. controls (351.72,105) and (375,128.28) .. (375,157) .. controls (375,185.72) and (351.72,209) .. (323,209) .. controls (294.28,209) and (271,185.72) .. (271,157) -- cycle ;
+	%Shape: Circle [id:dp05035601445689353] 
+	\draw  [fill={rgb, 255:red, 184; green, 233; blue, 134 }  ,fill opacity=1 ] (434,157) .. controls (434,128.28) and (457.28,105) .. (486,105) .. controls (514.72,105) and (538,128.28) .. (538,157) .. controls (538,185.72) and (514.72,209) .. (486,209) .. controls (457.28,209) and (434,185.72) .. (434,157) -- cycle ;
+	\draw (151,76) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+	% Text Node
+	\draw (99,205) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+	% Text Node
+	\draw (198,206) node [anchor=north west][inner sep=0.75pt]   [align=left] {C};
+	% Text Node
+	\draw (359,205) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+	% Text Node
+	\draw (430,205) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+	% Text Node
+	\draw (260,205) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+	% Text Node
+	\draw (479,76) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+	% Text Node
+	\draw (318,76) node [anchor=north west][inner sep=0.75pt]   [align=left] {C};
+	% Text Node
+	\draw (529,205) node [anchor=north west][inner sep=0.75pt]   [align=left] {C};
+\end{tikzpicture}
+\end{center}
+\begin{itemize}
+	\item Xếp 6 người ngồi cạnh một bàn thì số cách xếp là 6!.
+	\item Xếp quanh một bàn tròn
+	\begin{itemize}
+		\item Khi ta quay bàn tròn thì với một cách xếp có thứ tự của 6 người sẽ được tính 6 lần.
+	\end{itemize}
+	\item Từ đó, số cách xếp 6 người ngồi quanh một bàn tròn là $\frac{6!}{6}$ = 5! = \textcolor{red}{120}.
+\end{itemize}
+
+\begin{tcolorbox}[title=Tổng quát]
+	\begin{itemize}
+		\item Số cách xếp n người ngồi thành một hàng ngang là \textbf{n!}. 
+		\item Số cách xếp n người ngồi quanh một bàn tròn là \textbf{(n-1)!}
+	\end{itemize}
+\end{tcolorbox}
+
+
+
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 14.}} Có bao nhiêu cách xếp 7 học sinh nam và 5 học sinh nữ ra thành một hàng ngang sao cho không có 2 nữ sinh nào đứng cạnh nhau?}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{itemize}
+	\item Ký hiệu Nam là B, còn Nữ là G.
+	\item Ví dụ:
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+		\hline
+		\textcolor{red}{B}&G&\textcolor{red}{B}&G&\textcolor{red}{B}&G&\textcolor{red}{B}&G&\textcolor{red}{B}&\textcolor{red}{B}&\textcolor{red}{B}&G\\
+		\hline
+	\end{tabular}
+	\item Xếp chỗ cho 7 bạn Nam
+	\begin{itemize}
+		\item Do các bạn Nam có thể hoán vị cho nhau nên số cách xếp Nàm là 7!.
+	\end{itemize}
+	\item Do có 7 bạn Nam nên giữa chúng hình thành lên  khe + 2 bên = 8 vị trí. Ta có thể xếp  bạn Nữ vaafo 8 vị trí trên sao cho không có ít nhất 2 bạn Nữ ở cùng một vị trí thì sẽ thỏa mãn yêu cầu bài toán.
+	\begin{itemize}
+		\item Số cách xếp 5 bạn Nữ vào 8 vị trí mà không có ít nhất 2 bạn Nữ ở cùng 1 vị trí là $A_8^5$.
+	\end{itemize}
+	\item Theo nguyên lý nhân, số cách xếp thỏa mãn là 7!.$A_8^5$ = \textcolor{red}{33868800}.
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 15.}} Có bao nhiêu xâu nhị phân độ dài 32 bit mà trong đó có đúng 6 số 1 ?}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\indent Ví dụ:
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+		\hline
+		\textcolor{red}{1}& $\cdots$&\textcolor{red}{1}&\textcolor{red}{1}&$\cdots$&\textcolor{red}{1}&$\cdots$&\textcolor{red}{1}&$\cdots$&\textcolor{red}{1} \\
+		\hline
+	\end{tabular}
+\end{center}
+\begin{itemize}
+	\item Xâu nhị phân chỉ gồm 2 số là 0 hoặc 1.
+	\item Xâu nhị phân có độ dài 32 bit có đúng 6 số chính là số cách chọn ra  vị trí để xếp số 1 vào
+	\begin{itemize}
+		\item Số cách chọn đó là $C_{32}^6$ = \textcolor{red}{906192}.
+	\end{itemize}
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 16.}} Có bao nhiêu xâu ký tự có thể dược tao ra từ các chữ cái $\text{M\textcolor{red}{I}\textcolor{cyan}{SS}\textcolor{red}{I}\textcolor{cyan}{SS}\textcolor{red}{I}\textcolor{violet}{PP}\textcolor{red}{I}?}$}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\indent Ví dụ: xâu đề bài: $\text{M\textcolor{red}{I}\textcolor{cyan}{SS}\textcolor{red}{I}\textcolor{cyan}{SS}\textcolor{red}{I}\textcolor{violet}{PP}\textcolor{red}{I}?}$
+\begin{itemize}
+	\item Có 11 kí tự. Suy ra có 11! xâu 
+	\item Các chữ cái phân biệt 4I,4S,2P lặp lại
+	\item Vậy số xâu ký tự có thể tạo thành là: $\frac{11!}{4!.4!.2!}$ = \textcolor{red}{34650}.
+\end{itemize}
+
+\begin{tcolorbox}[title=Tổng quát:]
+	\begin{itemize}
+		\item[-] Xếp n đồ vật thành hàng ngang.
+		\item[-] Trong n đồ vật có $n_1$ đồ vật loại I,..., có $n_k$ đồ vật loại k.
+		\item[-] Số cách xếp đồ thỏa mãn là: $\frac{n!}{n_1!.n_2!...nk!}$
+	\end{itemize}
+\end{tcolorbox}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 17.}} Có 8 cuốn sách khác nhau. Hỏi cso bao nhiêu cách phân các cuốn này cho 3 học sinh: \textbf{Mơ, Mai, Mận} sao cho \textbf{Mơ} nhận được 4 cuốn sách, còn \textbf{Mai, Mận} mỗi người nhận được 2 cuốn sách?}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{itemize}
+	\item \textbf{Mơ} có 4 cuốn sách từ 8 cuốn sách. Số cách lấy sách cho \textbf{Mơ} là $C_8^4$.
+	\item \textbf{Mai} có 2 cuốn sách từ  cuốn sách còn lại. Số cách lấy sách cho \textbf{Mai} là $C_4^2$.
+	\item \textbf{Mận} có 2 cuốn sách từ 2 cuốn sách còn lại. Số cách lấy sách cho \textbf{Mận} là 1.
+	\item Theo nguyên lý nhân, số cách lấy sách thỏa mãn yêu cầu bài toán là: $C_8^4.C_4^2$ = \textcolor{red}{420}.
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 18.}} Giả sử tập X là tập có t phần tử. Ta gọi tổ hợp lặp chập k từ t phần tử X là một bộ không có thứ tự gồm k thành phần lấy từ các phần tử của X.
+			Ví dụ:
+			\begin{itemize}
+				\item Xét tập X = $\{a,b,c\}$. Các tổ hợp lặp chập 2 phần tử của X là
+				\begin{itemize}
+					\item $(a,a);(a,b);(a,c);(b,b);(b,c);(c,c).$
+				\end{itemize}
+			\end{itemize}
+			Chứng mình rằng số tổ hợp lặp chập k từ t là $C_{k+t-1}^{t-1} = C_{k+t-1}^k$.
+	}}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{itemize}
+	\item Ta xếp t phần tử thành 1 hàng ngang.
+	\begin{itemize}
+		\item Giữa 2 phần  tử liên tiếp luôn tồn tại 1 vách ngăn.
+		\item Do có t phần tử nên có t - 1 vách ngăn.
+		\item Chúng ta sẽ tạo thành t ngăn được đánh số từ 1 tới t.
+	\end{itemize}
+	\item Xét tổ hợp lặp chập k của t phần tử.
+	\begin{itemize}
+		\item Coi k phần tử chính là k ngôi sao. Xếp k ngôi sao thành 1 hàng ngang.
+		\item Ngăn thứ i chứa thêm 1 ngôi sao mỗi lần khi phần tử thứ i của tập xuất hiện trong tổ hợp.
+	\end{itemize}
+	\item Ta thấy một dãy chập (t-1) vách ngăn và k ngôi sao tương ứng với 1 tổ hợp lắp chập k của t phần tử.
+	\begin{itemize}
+		\item Chọn t - 1 vị trí từ  t-1+k vị trí để xếp chỗ cho t -1 vách ngăn. Số cách xếp là: $C_{t-1+k}^{t-1}$.
+		\item Còn lại k ví trí trong dãy ứng với k ngôi sao.
+	\end{itemize}
+	\item Vậy số tổ hợp lặp chặp k từ t phần tử là \textcolor{red}{$C_{t-1+k}^{t-1}$}
+	\item Theo tính chất của tổ hợp $C_n^k = C_n^{n-k}$, ta có $C_{t-1+k}^{t-1} = C_{t-1+k}^{k}$
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 19.}} Có 3 rổ đựng các quả cầu Xanh, Đỏ, Tím. Mỗi giỏ chỉ chứa các quả cầu cùng màu và mỗi giỏ chứa ít ra là 8 quả cầu.
+			\begin{enumerate}
+				\item Có bao nhiêu cách chọn ra 8 quả cầu.
+				\item Có bao nhiêu cách chọn ra 8 quả cầu mà trong đó có \underline{ít nhất} một quả cầu Đỏ, một quả cầu Xanh, một quả cầu Tím?
+			\end{enumerate}
+	}}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}
+	\item 
+	\begin{itemize}
+		\item Số cách lấy ra 8 quả cầu từ 3 giỏ là nguyên nguyên không âm của phương trình:
+		\begin{center}
+			$x_1+x_2+x_3 = 8$
+		\end{center}
+		\item Số nghiệm của phương trình là: $C^8_{3+8-1} = C_{10}^8 = 45$(Xem công thức trong giáo trình)
+	\end{itemize}
+	\item Số cách lấy  8 quả cầu từ 3 quả là số nghiệm nguyên không âm của phương  trình:
+	\begin{center}
+		$x_1+x_2+x_3 = 8$
+	\end{center}
+	Do lấy ít nhất một quả cầu Đỏ, Xanh, Tím:
+	\begin{itemize}
+		\item Đặt $t_1=x_1-1, t_2 = x_2-1, t_3 = x_3-3.$
+		\item Phương trình trở thành $t_1+t_2+t_3 = 5$
+		\item Vậy số nghiệm là $C_{3+5-1}^3 = C_7^3 $ = 21  
+	\end{itemize}
+\end{enumerate}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 20.}} Xét phương trình $x_1+x_2+x_3+x_4$ = 29.
+			\begin{enumerate}
+				\item Hỏi phương trình đã cho có bao nhiêu nghiệm nguyên dương ?
+				\item Hỏi phương trình đã cho có bao nhiêu nghiệm nguyên không âm ?
+			\end{enumerate}
+	}}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}
+	\item
+	\begin{itemize}
+		\item Do đề bài yêu cầu nghiệm nguyên dương, nên ta đặt: $y_i = x_i-1$ với $\forall i$ = $\overline{1,4}$
+		\item Vậy số nguyện của phương trình là $C_{4+25-1}^{25} = C_{28}^3$
+	\end{itemize}
+	\item \hspace{1cm}Số nghiệm của phương trình là: $C_{29+4-1}^{29} = C_{32}^{3}$
+\end{enumerate}
+
+\subsection{Chỉnh hợp, hoán vị tổ hợp}
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 1.}} Trong đoạn từ 1 đến 1000 có bao nhiêu số hoặc lẻ hoặc là số chính phương?}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Gọi A là tập các số lẻ.\\
+Gọi B là tập các số chính phương.\\
+$\Rightarrow A\cap B$ là tâp các số chính phương lẻ.\\
+$\Rightarrow A\cup B$ là tập các số lẻ hoặc là số chính phương.\\
+Khi đó:
+\begin{itemize}
+	\item $|A| = \begin{bmatrix}
+		\frac{1000}{2}
+	\end{bmatrix} = 500$
+	\item Số các số chính phương trong đoạn từ 1-1000 là các số k thỏa mãn $1\leq k^2 \leq 1000 \\ \Rightarrow|B| = \sqrt{1000} =  31 $
+	\item Số các số chính phương lẻ trong đoạn từ 1-1000 là các số k thỏa mãn $1\leq (2k+1)^2 \leq 1000 \\ \Rightarrow 0 \leq k \leq 15
+	\Rightarrow |A \cap B| = 16.$
+	\item Theo nguyên lý bù trừ, trong đoạn từ 1 đến 1000 số các số lẻ hoặc là số chính phương là :\\
+	$|A \cup B| =|A| + |B| - |A \cap B| = 500+31-16$ =  \textcolor{red}{515} số.
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 2.}} Có bao nhiêu  xâu nhị phân có độ dài 8, không chứa 6 số 0 liên tiếp ? }
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Số xâu nhị phân có độ dài 8 bít là: $2^8 = 256.$\\
+Đếm số xâu nhị phân chứa từ 6 số 0 liên tiếp:
+\begin{itemize}
+	\item \textbf{Chứa 6 số 0 liên tiếp}:
+	\begin{itemize}
+		\item Xếp  6 số 0 có 1 cách.
+		\item 6 số 0 ở đầu có 2 xâu.
+		\item 6 số 0 ở cuối có 2 xâu.
+		\item 6 số 0 ở giữa có 1 xâu.\\
+		$\Rightarrow$ có 5 xâu.
+	\end{itemize}
+	\item \textbf{Chứa 7 số 0 liên tiếp} có 2 xâu.
+	\item \textbf{Chứa 8 sô 0 liên tiếp} có 1 xâu.
+	\item Theo quy tắc cộng có 8 xâu thỏa mãn\\
+	$\Rightarrow$ Theo nguyên lý bù trừ, số xâu thỏa mãn yêu cầu bài toán là$2^8-9= 248.$
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 3.}} Có bao nhiêu số có 10 chữ số với các chữ số 1, 2, 3 mà trong đó mỗi chữ số 1, 2, 3 \underline{có mặt ít nhất 1 lần}.
+	}}
+	\underline{\textbf{Giải}}
+\end{center}
+Gọi $A_i$ là tập các số có 10 chữ số mà chữ số i không xuất hiện. Với(i=1,2,3)\\
+$\Rightarrow A_1 \cup A_2 \cup A_3$ là tập các số có 10 chữ số mà chữ số mà chữ số 1 or 2 or 3 không xuất hiện.\\
+Số các số tự nhiên có thể có từ tập 1, 2, 3 là $3^{10}$.
+\\Số các số tự nhiên có 10 chữ số mà trong đó mỗi chữ số 1, 2, 3 xuất hiện ít nhất 1 lần
+\\ Theo nguyên lý bù trừ, ta có N = $3^{10}-|A_1 \cup A_2 \cup A_3|$.\\
+GỌi $N_i$ lần lượt là tập có 10 chữ số mà có i số không xuất hiện\\
+Ta có:
+\begin{itemize}
+	\item $N_1 = |A_1+A_2+A_3| = 2^{10}+2^{10}+2^{10} = 3.2^{10}$
+	\item $N_2 = |A_1 \cap A_2| + | A_2 \cap A_3| + |A_3\cap A_1|= 1+1+1 = 3$
+	\item $N_3 = |A_1 \cap A_2 \cap A_3| = 0$
+\end{itemize}
+
+$\Longrightarrow$ Số các số thỏa mãn là: $N = 3^{10}- (N_1-N_2+N_3) = 3^{10} - (3.2^{10}-3-0)$= \textcolor{red}{55980}.
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 4.}} Có bao nhiêu xâu nhị phân có độ dài 10 hoặc là bắt đầu với 3 số 1, hoặc là kết thúc bởi 4 số 0?}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+A là tập các xâu nhị phân có độ dài 10 bit mà bắt đầu bởi số 3 và 1.\\
+B là tập các xâu nhị phân có độ dài 10 bit mà bắt đầu bởi số 4 và 0\\
+$\Rightarrow$ Cần tính $|A \cup B|$\\
+\begin{itemize}
+	\item $|A| = 2^7$ (Do 3 vị trí đầu 1 cách, 7 vị trí còn lại từ 0,1)
+	\item $|B| = 2^6$
+	\item $|A\cap B| = 2^3$
+\end{itemize}
+Theo nguyên lý bù trừ $|A\cap B| = |A|+|B|-||A\cup B| =2^7+2^6-2^3$ = \textcolor{red}{184}.
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 5.}} Có bao nhiêu số nguyên dương nhỏ hơn 1000 chia hết cho 7 nhưng không chia hết cho 5 và 2}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+A tập các số nguyên dương nhỏ hơn 10000 chia hết cho  7.
+\begin{center}
+	$\Rightarrow|A| = \begin{bmatrix}
+		\frac{1000}{7}
+	\end{bmatrix}
+	= 1428$.
+\end{center}
+B tập số nguyên dương nhỏ hơn 10000 và chia hết cho 7 và 2.
+\begin{center}
+	$\Rightarrow|B| = \begin{bmatrix}
+		\frac{10000}{2.7}
+	\end{bmatrix}
+	= 714.$
+\end{center}
+C tập số nguyên dương nhỏ hơn 10000 chia hết cho 7 và 5.
+\begin{center}
+	$\Rightarrow |C| = \begin{bmatrix}
+		\frac{10000}{5.7}
+	\end{bmatrix} = 285.$
+\end{center}
+$|B \cap C|$ tập các số nguyên dương nhỏ hơn 10000 và chia hết cho 7, 5, 2.
+\begin{center}
+	$\Rightarrow |B\cap C| = \begin{bmatrix}
+		\frac{10000}{2.5.7}
+	\end{bmatrix}= 142$.
+\end{center}
+Theo nguyên lý bù trừ, các số nhỏ hơn 10000 chia hết cho 7 nhưng không chia hết cho 2 và 5 là
+\begin{center}
+	$N = |A|-|B \cup C| = |A| - (|B|+|C|-|B\cap C|) = 1428-(714+285-142)$ = \textcolor{red}{571}.
+\end{center}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 6.}} Có bao nhiêu hoán vị của các số tự nhiên 1, 2, ..., 10 mà trong đó 3 số 1, 2, 3 không đứng cạnh nhau theo thứ tự tăng dần?}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Số các hoán vị của tập các số tự  nhiên $\{1, 2,...,9,10\}$ là 10!.\\
+Xét hoán vị của tập  các số tự nhiên $\{1,2,...,9,10\}$ mà 1, 2, 3 đứng cạnh nhau.
+\begin{itemize}
+	\item Xếp 1, 2, 3 có 1 cách do theo thứ tự tăng dần.
+	\item Xếp 8 số còn lại có 8! cách.
+	\item Theo nguyên lý nhân, số hoán vị trong trường hợp này là 1.8! = 8!.
+\end{itemize}
+Theo nguyên lý bù trừ, số các hoán vị của tập các số tự nhiên $\{1,2,..,9,10\}$ mà 1, 2, 3 không đứng cạnh nhau theo thứ tự tăng dần là $N = 10! -8! $ = \textcolor{red}{3588480}.
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 7.}} Phương trình $x_1+x_2+x_3+x_4 =  29$ (*) có bao nhiêu nghiệm nguyên không âm thỏa mãn
+			\begin{center}
+				$x_1\leq 3, x_2 \leq 12, x_3 \leq 5, x_4 \leq 10$
+			\end{center}
+	}}
+	\underline{\textbf{Giải}}
+\end{center}
+Đặt $t_1 =3 - x_1, t_2 =12 -x_2, t_3 = 5 - x_3, t_4 = 10 - x_4 $. \\
+Thay vào (*) ta được:
+\begin{center}
+	$t_1+t_2+t_3+t_4$ = 1          (**)
+\end{center}
+Từ (**) ta có: $t_1\leq 1, t_2 \leq 1, t_3\leq 1, t_4 \leq 1$.\\
+Vậy số nghiệm của phương  trình là: $C_{4+1-1}^1 = C_4^1 = 4$.
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 8.}} : Một lớp gồm có 50 học sinh làm bài kiểm tra gồm 3 câu hỏi. Biết rằng mỗi học sinh làm được ít nhất 1 câu và số học sinh làm được câu 1 là 40, câu 2 là 25, câu 3 là 30. Chứng minh rằng số học sinh làm được cả 3 câu không vượt quá 27.}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Gọi $X_i$ là số học sinh làm được câu thứ i. Với i = 1, 2, 3.\\
+$\Rightarrow |X_1| = 40, |X_2| = 25, |X_3| = 35$. \\
+Số học sinh làm được ít nhất 1 câu là: $|X_1 \cup X_2 \cup X_3| = 50.$\\
+Theo nguyên lý bù trừ, ta có:
+\begin{center}
+	$|X_1 \cup X_2 \cup X_3|=|X_1|+|X_2|+|X_3|-|X_1\cap X_2|-|X_2\cap X_3|-|X_3\cap X_1| +|X_1\cap X_2\cap X_3|$
+\end{center}
+Đặt $X_{12}= |X_1 \cap X_2|, X_{23}= |X_2 \cap X_3|,X_{13}= |X_1 \cap X_3|,X_{123}= |X_1 \cap X_2\cap X_3|$\\
+Ta có: 50 = 40 + 35 + 30 - $X_{12}-X_{23}-X_{13}+X_{123}$\\
+$\Leftrightarrow$ 50 = 105 - $X_{12}-X_{23}-X_{13}+X_{123}$\\
+$\Leftrightarrow$ 55 = $(X_{12}-X_{123})+(X_{23}-X_{123})+(X_{13}-X_{123})+2X_{123}$\\
+Đặt $A = X_{12}-X_{123} \geq 0, B = X_{23}-X_{123} \geq 0, C = X_{13}-X_{123} \geq 0$\\
+$\Rightarrow$ 55 - $2X_{123} = A+B+C \geq 0\\ \Rightarrow X_{123} \leq 
+\begin{bmatrix}
+	\frac{55}{2}
+\end{bmatrix}
+=27.
+$\\
+Vậy số học sinh làm được cả 3 câu không vượt quá 27.
+
+\subsection{Hệ thức truy hồi}
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 1.}} Giải các hệ thức truy hồi sau
+			\begin{enumerate}[label = \alph*)]
+				\item $
+				\begin{cases}
+					a_n = 2a_{n-1},& \forall n \geq  1\\
+					a_0 = 3
+				\end{cases}$
+				\item 
+				$\begin{cases}
+					a_n = 5a_{n-1}-6a_{n-2}, &   \forall n \geq 2
+					\\ a_0 = 1, a_1 = 0
+				\end{cases}$
+				\item
+				$\begin{cases}
+					a_n = 4a_{n-1}-4a_{n-2},& \forall n \geq 2\\
+					a_0 = 6, a_1 = 8
+				\end{cases}$
+				\item
+				$\begin{cases}
+					a_n = 4a_{n-2},& \forall n \geq 2\\
+					a_0, a_1 = 4
+				\end{cases}$
+				\item 
+				$\begin{cases}
+					a_n = \frac{a_{n-2}}{4}, & \forall n \geq 2\\
+					a_0 =1, a_1 = 0
+				\end{cases}$
+			\end{enumerate}
+	}}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}[label = \alph*)]
+	\item $
+	\begin{cases}
+		a_n = 2a_{n-1}, &\forall n \geq  1\\
+		a_0 = 3
+	\end{cases}$\\
+	\\Xét phương trình đặc trưng: t - 2  = 0 $\rightarrow$ t = 2.\\
+	Công thức tổng  quát: $a_n = a.2^n \text{ với } n \geq 0$.\\
+	+) n =  0.\\
+	$\Rightarrow a_0 = a.2^0 =3 \Rightarrow a = 3$.\\
+	Vậy  $a_n = 3.2^n  ,\forall n \geq 0.$
+	\item $\begin{cases}
+		a_n = 5a_{n-1}-6a_{n-2}, &   \forall n \geq 2
+		\\ a_0 = 1, a_1 = 0
+	\end{cases}$\\\\
+	Xét phương trình đặc trưng $t^2-5t+6 = 0$.\\
+	Có nghiêm $t_1 = 1, t_2 = 3$.\\
+	$\Rightarrow \text{Công thức tổng quát: } a_n = a.2^n+b.3^n, \forall n \geq 0$\\
+	Ta có : $\begin{cases}
+		a_0 =1\\
+		a_1 = 0
+	\end{cases}
+	\Rightarrow \begin{cases}
+		a.2^0+b.3^0 = 1\\
+		a.2^1+b.3^1 = 0
+	\end{cases}
+	\Rightarrow \begin{cases}
+		a = 3\\
+		b = -2
+	\end{cases}$
+	\\Vậy $a_n = 3.2^n-2.3^n, \forall n \geq 0$
+	\item$ 
+	\begin{cases}
+		a_n = 4a_{n-1}-4a_{n-2},& \forall n \geq 2\\
+		a_0 = 6, a_1 = 8
+	\end{cases}$\\
+	\\ Xét phương trình đặc trưng: $t^2-4t+4 = 0$\\
+	Có nghiệm kép t = 2.\\
+	$\Rightarrow \text{ Công thức tổng quát } a_n = (a+b.n).2^n, \forall n \geq 0$\\
+	Ta có: $\begin{cases}
+		a_0 = 6\\
+		a_1 = 8
+	\end{cases}\Rightarrow \begin{cases}
+		(a+0.b).2^0= 6\\
+		(a+1.b).2^1 = 8
+	\end{cases}\Rightarrow \begin{cases}
+		a = 6
+		\\b =  -2
+	\end{cases}$\\
+	Vậy $a_n = (6-2n).2^n, \forall n \geq 0$
+	\item $\begin{cases}
+		a_n = 4a_{n-2},& \forall n \geq 2\\
+		a_0, a_1 = 4
+	\end{cases}$\\\\
+	Xét phương trình đặc trưng: $t^2 - 4 = 0$.\\
+	Có nghiêm: $t_1 = -2, t_2 = 2.$\\
+	$\Rightarrow a_n = a.2^n+b.(-2)^n , \forall n \geq 0$\\
+	Ta có: $\begin{cases}
+		a_0 = 0\\
+		a_1= 4
+	\end{cases}\Rightarrow\begin{cases}
+		a.2^0+b.(-2)^0=0\\
+		a.2^1+b.(-2)^1=4
+	\end{cases}\Rightarrow\begin{cases}
+		a=1\\b=-1
+	\end{cases}$\\
+	Vậy $a_n = 2^n-(-2)^n, \forall n \geq 0$
+	\item $\begin{cases}
+		a_n = \frac{a_{n-2}}{4}, & \forall n \geq 2\\
+		a_0 =1, a_1 = 0
+	\end{cases}$\\
+	\\Xét phương trình đặc trưng: $t^2-\frac{1}{4} = 0$.\\
+	Có 2 nghiệm phân biệt $t_1 = -\frac{1}{2}, t_2 = \frac{1}{2}$\\
+	$\Rightarrow \text{Công thức tổng  quát: } a_n = a.(-\frac{1}{2})^n+b(\frac{1}{2})^n$\\
+	Ta có:\\ $\begin{cases}
+		a_0 = 1\\a_1 = 0
+	\end{cases}\Rightarrow \begin{cases}
+		a.(-\frac{1}{2})^0+b(\frac{1}{2})^0 = 1\\
+		a.(-\frac{1}{2})^1+b(\frac{1}{2})^1 = 0
+	\end{cases}\Rightarrow \begin{cases}
+		a = \frac{1}{2}\\ b = \frac{1}{2}
+	\end{cases}$\\
+	Vậy công thức tổng quát $a_n = (1+(-1)^n).(\frac{1}{2})^{n+1}, \forall n \geq 0.$
+\end{enumerate}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 2.}}  Lập công thức truy hồi cho 
+			$S_n$ là số cách chia một hình chữ nhật kích thước 2 x n ra thành các hình chữ nhật con có cạnh song song với cạnh của hình chữ nhật đã cho và với kích thước là 1 x 2, 2 x 1, 2 x 2. Giải hệ
+			thức thu được}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
++) n = 1. Ta có lưới ô vuông kích thước 2 x 1. Số cách phủ bằng hình chữ nhật kích thước 2 x 1 là $S_1 = 1$.\\
++) n = 2. Ta có lưới ô vuông kích thước 2 x 2.
+\begin{itemize}
+	\item Ta có thể phủ bằng hình chữ nhật kích thước 1 x 2. Số cách phủ là 1.
+	\item Ta có thể phủ bằng hình chữ nhật kích thước 2 x 1. Số cách phủ là 1.
+	\item Ta có thể phủ bằng hình chữ nhật kích thước 2 x 2. Số cách phủ là 1.
+	\item Do vậy, Số cách phủ trong trường hợp này là $S_2 = 3$.
+\end{itemize}
++) n > 2. Phân tập các cách phủ thành 3 tập:
+\begin{itemize}
+	\item Tập A - tập các cách phủ tron đó ô ở góc trái được phủ bởi hình chữ nhật kích thước 1 x 2.\\
+	Ví dụ:
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{p{0.5cm}p{0.5cm}p{0.5cm}p{0.5cm}}
+			1&2&3& $\cdots$ 
+		\end{tabular}
+		\\
+		\begin{tabular}{|p{0.5cm}|p{0.5cm}|p{0.5cm}|p{0.5cm}}
+			\hline
+			x&x&& $\cdots$  \\
+			\hline
+			&&& $\cdots$\\
+			\hline
+		\end{tabular}
+	\end{table}
+	\\Còn lại n - 2 ô cần phủ (từ 3, 4...). Ta được |A| = $S_{n-2}$
+	\item Tập B - tập các cách phủ tron đó ô ở góc trái được phủ bởi hình chữ nhật kích thước 2 x 1.\\
+	Ví dụ:
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{p{0.5cm}p{0.5cm}p{0.5cm}p{0.5cm}}
+			1&2&3& $\cdots$ 
+		\end{tabular}
+		\\
+		\begin{tabular}{|p{0.5cm}|p{0.5cm}|p{0.5cm}|p{0.5cm}}
+			\hline
+			x&&& $\cdots$  \\
+			\hline
+			x&&& $\cdots$\\
+			\hline
+		\end{tabular}
+	\end{table}
+	\\ Còn lại n - 1  ô cần phủ(Từ 2, 3,..). Ta được |B| = $S_{n-1}$. 
+	\item Tập C - tập các cách phủ trong đó ô ở góc trên trái được phủ bởi hình chữ  nhật 2 x 2.\\
+	Ví dụ:\\
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{p{0.5cm}p{0.5cm}p{0.5cm}p{0.5cm}}
+			1&2&3& $\cdots$ 
+		\end{tabular}
+		\\
+		\begin{tabular}{|p{0.5cm}|p{0.5cm}|p{0.5cm}|p{0.5cm}}
+			\hline
+			x&x&& $\cdots$  \\
+			\hline
+			x&x&& $\cdots$\\
+			\hline
+		\end{tabular}
+	\end{table}
+	\\ Còn lại n - 2 ô cần phủ(  Từ 3, 4,..). Ta được |C| = $S_{n-2}$    
+\end{itemize}
++) Theo nguyên lý cộng: $S_n  = |A| +|B| +|C|, \forall n \geq 3.\text{Hay } S_n = S_{n-1} +2S_{n-2}, \forall n \geq 3.$
+\begin{itemize}
+	\item phương trình đặc trưng: $t^2-t-2=0.$
+	Có  nghiêm phân biệt $t_1 = -1, t_2 = 2.$
+	\item Công thực tổng quát $S_n = a.(-1)^n+b.2^n, \forall n \geq 1$
+	\\Ta có\\\\
+	$\begin{cases}
+		S_1 = 1\\S_2 =3
+	\end{cases}\Rightarrow \begin{cases}
+		-a+2b =1\\
+		a+4b = 3 
+	\end{cases}\Rightarrow \begin{cases}
+		a = \frac{1}{3}\\
+		b = \frac{2}{3}
+	\end{cases} $
+	\item Công thức tổng quát $S_n = \frac{(-1)^n+2^{n+1}}{3}, \forall n \geq 1.$
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 3.}} Lập công thức truy hồi để đếm $F_n$ là số xâu nhị phân độ dài n không chứa 3 số 0 liên tiếp. Từ đó tính $F_n$}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
++) Với n = 1. Ta có 2 xâu nhị phân độ dài 1 không chứa 3 số 0 liền nhau là 0 và 1. Do vậy $F_1 = 2.$
++) Với n = 2. Ta có 4 xâu nhị phân độ dài 2 không chứa 3 số 0 liền nhau là 00,01,10,11. Do vậy $F_2 = 4$
++) Với n = 3. Ta có 7 xâu nhị phân độ dài 3 không chứa 3 số 0 liền nhau là 001,010,011,100,101,110. Do vậy $F_3  = 7$
++) Với n > 3. Phân tập các xâu nhị phân cần đếm ra thành 3 tập: 
+\begin{itemize}
+	\item Tập A - Tập các xâu nhị phân cần đếm chứa 1 ở vị trí đầu tiên.\\
+	Ví dụ:
+	\begin{center}
+		
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			\textcolor{red}{1}&$\cdots$&$\cdots$& $\cdots$  \\
+			\hline
+		\end{tabular}
+	\end{center}
+	Do mỗi xâu nhị phân trong A chứa 1 ở vị trí đầu tiên nên n - 1 phần tử còn lại sẽ tạo thành 1 xâu nhị phân cần đếm độ dài n - 1. Ta được |A| - $F_{n-1}$
+	\item Tập B – Tập các xâu nhị phân cần đếm chứa 00 ở vị trí đầu tiên.
+	\\Ví dụ:
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			\textcolor{red}{0}&\textcolor{red}{0}&\textcolor{red}{1}& $\cdots$  \\
+			\hline
+		\end{tabular}
+	\end{center}
+	Do mỗi chỉnh hợp trong b chứa 00 ở vị trí đầu tiên nên vị trí thứ ba của nó phải là số 1. Còn lại n - 3 phần tử sẽ tạo thành 1 xâu nhị phân cần đếm độ dài n - 3. Ta được |B| = $f_{n-3}$ 
+	\item Tập C – Tập các xâu nhị phân cần đếm chứa 01 ở vị trí đầu tiên.\\
+	Ví dụ:
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			\textcolor{red}{0}&\textcolor{red}{1}&$\cdots$& $\cdots$  \\
+			\hline
+		\end{tabular}
+	\end{center}
+	Do mỗi xâu nhị phân trong C chứa 01 ở vị trí đầu tiên nên n - 2 phần tử sẽ tạo thành 1 xâu nhị phân cần đếm độ dài n - 2. Ta được |C| = $F_{n-2}.$
+	\item Ta thấy các tập A, B, C tạo thành phân hoạch của tập tất cả các xâu nhị phân cần đếm.
+\end{itemize}
++) Theo nguyên lý cộng, $F_n = |A|+|B|+|C|, \forall n \geq 4$. Hay \textcolor{red}{$F_n= F_{n-1}+F_{n-2}+F_{n-3}$}.\\
+\indent \hspace{0.5cm}$F_{10}$
+\begin{itemize}
+	\item[=] $F_9+F_8+F_7$
+	\item[=] $F_8+F_7+F_6+F_8+F_7 = 2F_8 +2F_7+F_6$
+	\item[=] $2(F_7+F_6+F_5)+2F_7+F_6 = F_7 + 3F_6+2F_5$
+	\item[=] $4(F_6+F_5+F_4) +3F_6+2F_5 = 7F_6+6F_5+4F_4$
+\end{itemize}
+Ta thấy: 
+\begin{itemize}
+	\item[=] $7(F_5+F_4+F_3)+6F_5+4F_4 = 13F_5+11F_4+7F_3$
+	\item[=] $13(F_4+F_3+F_2) + 11F_4 +7F_3 = 24F_4+20F_3+13F_2$
+	\item[=] $20(F_3+F_2+F_1) + 20F_3+13F_2 = 40F_3+33F_2+20F_1$
+	\item[=] 40.7 + 30.4 + 20.2
+	\item[=] \textcolor{red}{452}
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 4.}} Lập công thức truy hồi để đếm  $Q_n$ là số chỉnh hợp lặp chập n từ ba chữ số 0, 1, 2 không chứa hoặc là hai số 0 liên tiếp hoặc là hai số 1 liên tiếp. Từ đó tính 
+			$Q_6$. Giải hệ thức thu được}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Gọi $Q_n$ là số chỉnh hợp lặp chập n từ ba chữ số 0, 1, 2 không chứa hoặc là xâu 00, hoặc là xâu 11.\\
+Với n = 1, ta có các chỉnh hợp lặp chập 1 của 3 thỏa mãn là: 0, 1, 2. Do vậy  $Q_1=3$.\\
+Với n = 2, ta có các chỉnh hợp lặp chập  của 3 là: 01, 02, 10, 12, 20, 21, 22. Do vậy $Q_2 = 7$\\
+Với n $\geq$ 2. Phân tập các chỉnh hợp lập cần đếm  ra thành 3 tập.
+\begin{itemize}
+	\item Tập A - Tập các chỉnh hợp lặp bắt đầu bằng 2.\\
+	Ví dụ:
+	\begin{center}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		2&$\cdots$&$\cdots$ &$\cdots$   \\
+		\hline 
+	\end{tabular}
+	\end{center}
+	Do mỗi  chỉnh hợp lặp trong A chứa 2 ở vị trí đầu tiên nên n - 1 phần tử còn lại sẽ tạo thành chỉnh hợp lặp cần đếm độ dài n - 1. Ta được |A| = $Q_{n-1}$.
+	\item Tập B - Tập các chỉnh hợp lặp bắt đầu bằng 0.
+	\\Nếu vị trí thứ 2 trong chỉnh hợp lặp là 2. Còn lại n - 2 phần tử sẽ tạo thành chỉnh hợp lặp cần đếm độ dài n - 2. Ta được $Q_{n-2}$.
+	\\Ví dụ:\\
+	\begin{center}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		0&2&$\cdots$ &$\cdots$   \\
+		\hline 
+	\end{tabular}
+	\end{center}
+	Nếu vị trí thứ hai trong chỉnh hợp lặp là 1 thì ta lại tiếp tục xét như vậy cho đến khi đạt chỉnh hợp lặp ngắn nhất có độ dài là 1.\\
+	Ví dụ:
+	\begin{center}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		0&1&$\cdots$ &$\cdots$   \\
+		\hline
+	\end{tabular}
+	\end{center}
+	\item Tập C - Tập các chỉnh hợp lặp bắt đầu bằng 1.
+	\\Do vai trò của 0 và 1 là như nhau nên số chỉnh hợp lặp bắt đầu bằng 0 sẽ bằng số chỉnh hợp lặp bắt đầu bằng 1.
+	\item Ta thấy các tập A, B, C tạo thành  phần hoạch của tập tất cả các chỉnh hợp lặp cần đếm.
+\end{itemize}
+Theo nguyên lý cộng, ta có $Q_n=|A|+|B|+|C|, \forall n \geq 3.$
+\begin{itemize}
+	\item Ta thấy $Q_n = Q_{n-1}+2(Q_{n-2}+Q_{n-3}+Q_{n-4}+...+1), \forall n \geq 3$
+	\item Trừ 2 vế cho nhau ta có $Q_n-Q_{n-1}=Q_{n-1}-Q_{n-2}+2Q_{n-2}\Rightarrow Q_n = 2Q_{n-1}+Q_{n-2}$
+	\item  Phương trình đặc trưng: $t^2-2t-1 = 0$.
+	\\ Phương trình có 2 nghiệm phân biệt: $t_1=1-\sqrt{2}, t_2 = 1+\sqrt{2}$
+	\item Công thức tổng quát $Q_n=a(1-\sqrt{2})^n+b(1+\sqrt{2})^n, \forall n \geq 1$\\\\
+	$\begin{cases}
+		Q_1=3\\Q_=7
+	\end{cases}\Rightarrow \begin{cases}
+		Q_1=a(1-\sqrt{2})+b(1+\sqrt{2})=3\\
+		Q_2=a(1-\sqrt{2})^2+b(1+\sqrt{2})^2=7
+	\end{cases}$\\
+	Rút  gọn $a = \dfrac{1-\sqrt{2}}{2},b = \dfrac{1+\sqrt{2}}{2}$.
+	\item Công thức tổng quát: $Q_n=\dfrac{1}{2}.(1-\sqrt{2})^{n+1}+\dfrac{1}{2}.(1+\sqrt{2})^{n+1}, \forall n \geq 1$
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 5.}} Xét ma trận vuông  $A = \begin{pmatrix}
+				0&1\\
+				1&1
+			\end{pmatrix}$
+			\begin{enumerate}[label = \alph*)]
+				\item Chứng minh rằng $A^n = \begin{pmatrix}
+					F_{n-1}&F_n\\
+					F_n & F_{n+1}
+				\end{pmatrix}$. Trong đó $F_n$ là số hạng thứ n cả dãy số Fibonaci.
+				\item Tính det$(A^n)$. Từ đó suy ra công thức $F_{n-1}F_n-(F_n)^2= (-1)^n$
+			\end{enumerate}
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}[label = \alph*)]
+	\item 
+	Dãy Fibonaci:
+	$\begin{cases}
+		F_n = F_{n-1}+F_{n-2},& \forall n \geq 2\\
+		F_0 = 0, F_1 = 1
+	\end{cases}$\\
+	+) n = 1. Ta có A = 
+	$\begin{pmatrix}
+		F_0 & F_1 \\
+		F_1 & F_2 
+	\end{pmatrix}=\begin{pmatrix}
+		0 & 1\\ 1 & 1
+	\end{pmatrix}$\\
+	Cần chứng minh biểu thức đúng với n = k và n = k + 1\\
+	Giả sử công thức đúng với n = k với mọi $k\geq 2$. Ta có
+	\begin{center}
+		$A^k = \begin{pmatrix}
+			F_{k-1} & F_k\\
+			F_k & F_{k+1}
+		\end{pmatrix}$
+	\end{center}
+	Với n = k + 1.
+	Ta có:\\
+	\begin{center}
+		$A^{k+1} = A^k.A  = \begin{pmatrix}
+			F_{k-1} & F_{k}\\
+			F_k & F_{k+1}
+		\end{pmatrix}
+		\begin{pmatrix}
+			0 & 1 \\ 1 & 1
+		\end{pmatrix} = \begin{pmatrix}
+			F_k & F_{k-1}+F_k\\
+			F_{k+1}& F_k + F_{k+1}
+		\end{pmatrix}= \begin{pmatrix}
+			F_k & F_{k+1}\\
+			F_{K+1} & F_{k+2}
+		\end{pmatrix}$ luôn đúng.
+	\end{center}
+	Theo nguyên lý quy nạp ta có điều phải chứng minh.
+	\item 
+	Ta có det$(A^n)= \begin{vmatrix}
+		F_{n-1} &F_n\\
+		F_n & F_{n+1}
+	\end{vmatrix}= F_{n-1}.F_{n+1}-(F_n)^2$\\
+	Mặt khác det(AB) = det(A)det(B). Do vậy det$(A^n) = (\text{det$(A)$})^n$\\
+	Ta có det(A) = $\begin{vmatrix}
+		0 &1 \\ 1&1
+	\end{vmatrix}= -1$. Do vậy det$(A^n)= (-1)^n$.
+	\\Đồng nhất hệ số ta có điều phải chứng minh.
+\end{enumerate}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 6.}} Tính số mất thứ tự $D_n$\\\\
+			Có n là thư và n phong bì ghi sẵn địa chỉ. Bỏ ngẫu nhiên các lá thư vào các phong bì. Hỏi số cách để xảy ra không một lá thư nào bỏ đúng địa chỉ là bao nhiêu ? Số cách bỏ thư như trên được gọi là số mất thứ tự.
+	}}
+	\underline{\textbf{Giải}}
+\end{center}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 7.}} Trên mặt phẳng, kẻ n đường thẳng sao cho không có 2 đường thẳng chéo nhau nào song song với 3 đường nào đồng quy. Hỏi mặt phương được chia làm mấy phần ?}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 8.}} Tìm hệ số tổ hợp $C_n^k$}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Gọi số cách lấy ra k phần tử từ tập gồm n phần tử là $C_n^k$.\\
+Chọn một phần tử cố định trong n phần tử đang xét .\\
+Xét số cách chọn tập con có k phần tử của tập n phần tử thành 2 lớp: có chứa x và không chứa x.\\
+Nếu tập con có chứa x.
+\begin{itemize}
+	\item Bổ sung thêm k - 1 phần tử gồm n - 1 phần tử còn lại.
+	\item Số cách chọn tập có chứa x là $C_{n-1}^{k-1}$.
+\end{itemize}
+Nếu tập con không chứa x. 
+\begin{itemize}
+	\item Bổ sung thêm k phàn tử từ tập gồm n - 1 phần tử còn lại.
+	\item Số cách chọn tập không chứa x là $C_{n-1}^k$.
+\end{itemize}
+Theo nguyên lý cộng. Ta có công thức đệ quy $C_n^k = C_{n-1}^{k-1}+C^k_{n-1}$
+\\Trong đó $C_0^n = C_n^n = 1.$
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 9.}} Bài toán tháp Hà Nội - Hanoi Tower
+			\\ Có 3 cái cọc a,b,c. Trên cọc a có một chồng gồm n cái đĩa đường kính giảm dần từ dưới lên. Cần phải di chuyển chồng đĩa từ cọc a sang cọc b tuân thủ quy tắc: "Mỗi lần chỉ chuyển 1 đĩa và chỉ được xếp đãi có đường kính nhỏ hơn lên đĩa có đường kính lớn hơn. Trong quá trình chuyển được phép dùng cọc b làm cọc trung gian"Tính số lần di chuyển đĩa ít nhất cần thực hiện để di chuyển toàn bộ đĩa từ cọc a sang cọc c ? 
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Bài này nên code để hiểu rõ hơn\\
+Đây là code mẫu:
+\begin{lstlisting}
+	#include<iostream>
+	using namespace std;
+	void chuyen(int n, char a, char b){
+		cout<<"\nChuyen dia thu "<<n<<" tu cot "<<a<<" sang cot "<<b;
+	}
+	void thaphanoi(int n, char a, char b, char c){
+		if(n == 1){
+			chuyen(1, a , c);
+		}else{
+			thaphanoi(n-1, a , c, b);
+			chuyen(n-1, a, c);
+			thaphanoi(n-1, b, c, a);
+		}
+	}
+	int main(){
+		int n;
+		do{
+			cout<<"Nhap so dia cua thap: ";
+			cin>>n;
+		}while(n<=0);
+		char a = 'A', b = 'B', c = 'C';
+		thaphanoi(n, a, b, c);
+	}
+\end{lstlisting}
+Để đếm số lần có thê thêm biến count vào vòng lặp.
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 10.}} Xây dựng công thức đệ quy cho $Q_n$, là số lượng cách phủ lưới ô vuông kích thước 2 x n bằng các quân bài Domino ? }
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\subsection{Hàm sinh}
+\begin{tcolorbox}[title=Một vài chuỗi hội tụ]
+	\begin{enumerate}
+		\item $\dfrac{1}{1-x} = 1+x+x^2+...=\displaystyle\sum_{n=0}^\infty x^n,\quad \forall |x|$ < 1
+		\item $\dfrac{1}{1+x}=1-x+x^2-...=\displaystyle\sum_{n=0}^\infty (-1)^nx^n,\quad \forall |x|$ < 1
+	\end{enumerate}
+\end{tcolorbox}
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 1.}} Viết công thức dưới dạng giải tích cho hàm sinh của các dãy số sau:
+			\begin{enumerate}[label = \alph*)]
+				\item $a_n = 3^n, n=0,1,...$
+				\item $\{a_0,a_1,a_2,a_3,..\} = \{0,1,0,1,...\}$
+			\end{enumerate}
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Bài này thì cứ công thức trên mà áp vào thôi
+\begin{enumerate}[label = \alph*)]
+	\item Hàm sinh là $f(x)=1+3x+3^2x^2+...=1+(3x)+(3x)^2+...=\dfrac{1}{1-3x}$
+	\item Hàm sinh là $f(x)=x+x^3+x^5+...=x(1+x^2+x^4+...)=x(1+x^2+(x^2)^2+...\\
+	\indent\hspace{2.87cm}=x.\dfrac{1}{1-x^2}=\dfrac{x}{1-x^2}$
+\end{enumerate}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 2.}} Tìm công thức cho số hạng tổng quát $a_n$ của dãy số 
+			$\{a_n\}$ có hàm sinh là 
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Ngược lại của bài 1
+\begin{enumerate}
+	\item $G(x)=\dfrac{1}{1-2x}$\\
+	Ta có: $\dfrac{1}{1-2x}=1+2x+4x^2+...=\displaystyle\sum_{n=0}^\infty a_nx^n$\\
+	$\Rightarrow$ chuỗi số cần tìm: $a_n = 2^n$
+	\item $G(x)=\dfrac{1}{(1-x)^2}$\\
+	Ta có $\dfrac{1}{(1-x)^2}=(1+x+x^2+...)^2=1+2x+3x^2+4x^3+...$\\
+	$G(x)-\displaystyle\sum_{n=0}^\infty C_{n+2-1}^n =\displaystyle\sum_{n=0}^\infty (n+1)x^n
+	= \displaystyle\sum_{n=0}^\infty a_nx^n $\\
+	$\Rightarrow a_n = n+1 , \forall n = 0,1,2,...$
+	\item $G(x)=\dfrac{1}{1+x-2x^2}$\\
+	Ta có $\dfrac{1}{1+x-2x^2}=\dfrac{1}{(1-x)(1+2x)}=\dfrac{2}{3}.\dfrac{1}{1+2x}+\dfrac{1}{3}.\dfrac{1}{1-x}$\\
+	$G(x)=\dfrac{2}{3}\displaystyle\sum_{n=0}^\infty (-1)^n(2x)^n+\dfrac{1}{3}\displaystyle\sum_{n=0}^\infty x^n=\displaystyle\sum_{n=0}^\infty \dfrac{(-1)^n.2^{n+1}+1}{3}x^n=\displaystyle\sum_{n=0}^\infty a_nx^n$\\
+	$\Rightarrow a_n=\dfrac{1+(-1)^n.2^{n+1}}{3}, \forall n = 0, 1, 2,...$
+\end{enumerate}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 3.}} Sử dụng hàm sinh để tìm công thức dưới dạng thực hiện cho dãy số cho bởi công thức đệ quy sau đây:}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}[label = \alph*)]
+	\item $\begin{cases}
+		a_{n+1}=a_n+2\\a_0=3
+	\end{cases}$\\
+	Gọi $f(x)=\displaystyle\sum_{n=0}^\infty a_nx^n$ là hàm sinh của dãy số.
+	\\Ta có $f(x)=a_0+a_1x+a_2x^2+...\Rightarrow xf(x) = a_0x+a_1x^2+a_2x^3+...$
+	\\ $\Rightarrow f(x)[1-x] = a_0+(a_1-a_0x)-(a_2-a_1)x^2+...=-3+2x+2x^2+...$
+	\begin{itemize}
+		\item Thay $\begin{cases}
+			a_0=-3\\a_n -a_{n-1} = 2 & \forall n \geq 1
+		\end{cases}$
+	\end{itemize}
+	Ta có $(1-x)f(x)+5=2(1+x+x^2+...)\Rightarrow (1-x)f(x)+5=\dfrac{2}{1-x}$\\
+	Từ đó có $f(x) = \dfrac{2}{(1-x)^2}-\dfrac{5}{1-x}=2\displaystyle\sum_{n=0}^\infty (n+1)x^n-5\displaystyle\sum_{n=0}^\infty x^n = \displaystyle\sum_{n=0}^\infty(2n+2-5)x^n \\
+	\indent\hspace{2.4cm}= \displaystyle\sum_{n=0}^\infty (2n-3)x^n$
+	\\
+	Vậy $a_n = 2n-3,\quad \forall n \geq 0$
+	\item $\begin{cases}
+		2a_{n+1}= a_n+a_{n-1} & \forall n \geq 2\\
+		a_0=0,& a_1=1
+	\end{cases}$\\
+	Gọi $f(x)=\displaystyle\sum_{n=0}^\infty a_nx^n$ là hàm sinh của dãy số.
+	\\Ta có: $f(x)=a_0+a_1x+\displaystyle\sum_{n=2}^\infty a_nx^n=x+\dfrac{1}{2}\displaystyle\sum_{n=2}^\infty(a_{n-1}+a_{n-2})x^n=x+\dfrac{1}{2}\displaystyle\sum_{n=2}^\infty a_{n-1}x^n+\dfrac{1}{2}\displaystyle\sum_{n=2}^\infty a_{n-2}x^n$\\
+	Có $f(x) = x +\dfrac{1}{2}\displaystyle\sum_{n=1}^\infty a_nx^{n+1}+\dfrac{1}{2}\displaystyle\sum_{n=0}^\infty a_nx^{n+2}\\
+	=x+\dfrac{1}{2}x\displaystyle\sum_{n=0}^\infty a_nx^n+
+	\dfrac{1}{2}x^2\displaystyle\sum_{n=0}^\infty a_nx^n
+	\\ =x+\dfrac{x}{2}(f(x)-a_0)+\dfrac{x^2}{2}f(x)$
+	\\Từ đó ta có được $f(x)=x+\dfrac{x(x+1)}{2}f(x)
+	\\ \Rightarrow f(x) = \dfrac{-2x}{x^2+x-2}=-\dfrac{4}{3}\dfrac{1}{x+2}-\dfrac{2}{3}\dfrac{1}{x-1}$\\
+	Có $f(x) =-\dfrac{2}{3}\dfrac{1}{1+\dfrac{x}{2}}+\dfrac{2}{3}\dfrac{1}{1-x}\\
+	\indent\hspace{1.35cm} =-\dfrac{2}{3}\displaystyle\sum_{n=0}^\infty (-1)^n(\frac{1}{2})^nx^n+\dfrac{2}{3}\displaystyle\sum_{n=0}^\infty x^n\\
+	\indent\hspace{1.35cm}=\displaystyle\sum_{n=0}^\infty \dfrac{2}{3}
+	\begin{bmatrix}
+		-(-\dfrac{1}{2})^n
+	\end{bmatrix}x^n
+	$\\
+	Vậy $a_n=\dfrac{2}{3}\begin{bmatrix}
+		1-(-\dfrac{1}{2})^n
+	\end{bmatrix}, \forall n \geq 0$
+	\item $\begin{cases}
+		a_{n+2}=3a_{n+}-2a_n+2.3^n& \forall n \geq 2\\
+		a_0=1,a_1=2
+	\end{cases}$\\
+	Gọi $f(x)=\displaystyle\sum_{n=0}^\infty a_nx^n$ là hàm sinh của dãy số.
+	\\Ta có: $f(x)=a_0+a_1x+\displaystyle\sum_{n=2}^\infty a_nx^n=1+=2x+\displaystyle\sum_{n=2}^\infty (3a_{n-1}-2a_{n-2}+2.3^{n-2}x^n)$
+	\begin{itemize}
+		\item Có $f(x) =1+2x+3\displaystyle\sum_{n=2}^\infty a_{n-1}x^n-2\displaystyle\sum_{n=2}^\infty a_{n-2}x^n+2\displaystyle\sum_{n=2}^\infty 3^{n-2}x^n$
+		\item Cố $f(x) = 1 +2x+3x\displaystyle\sum_{n=2}^\infty a_{n-1}x^{n-1}-2x^2\displaystyle\sum_{n=2}^\infty a_{n-2}x^{n-2} +2x^2\displaystyle\sum_{n=2}^\infty 3^{n-2}x^{n-2}$
+		\item Thay vào ta được $f(x)=1+2x+3x(f(x)-a_0)-2x^2f(x)+2x^2\displaystyle\sum_{n=0}^\infty (3x)^n$
+		\item Hay $f(x) = 1+2x-3x+(3x-2x^2)f(x)+\dfrac{2x^2}{1-3x}$
+	\end{itemize}
+	Từ đó ta được \\$f(x) = \dfrac{5x^2-4x+1}{(x-1)(2x-1)(1-3x)}=\dfrac{1}{1-x}-\dfrac{1}{1-2x}+\dfrac{1}{1-3x}= \displaystyle\sum_{n=0}^\infty x^n-\displaystyle\sum_{n=0}^\infty (2x)^n+\displaystyle\sum_{n=0}^\infty(3x)^n$\\
+	Rút gọn được $f(x) = \displaystyle\sum_{n=0}^\infty (1-2^n+3^n)x^n$\\
+	Vậy $a_n = 3^n-2^n+1,\quad \forall n \geq  0.$
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\chapter{Xây dựng các cấu hình tổ hợp}
+\section{Lý thuyết}
+Với chương này chỉ cần nắm vững định lý Dirichlet,...
+
+\section{Bài tập}
+\subsection{Bài toán tồn  tại}
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 1.}} Trên mặt phẳng cho n $\geq$ 6 điểm, khoảng cách giữa các cặp điểm là khác nhau từng đôi. Mỗi điểm được nối với điểm gần nó nhất. Chứng minh rằng mỗi điểm được nối với không quá 5 điểm.
+		}
+	}
+	\underline{\textbf{Giải}}
+	
+\end{center}
+Minh họa:
+\begin{center}
+	\tikzset{every picture/.style={line width=0.75pt}}        
+	\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+		\draw [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ]   (152.25,118.99) -- (277.83,47.01) ;
+		\draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (152.25,118.99) -- (299.35,107.01) ;
+		\draw [color={rgb, 255:red, 139; green, 87; blue, 42 }  ,draw opacity=1 ]   (152.25,118.99) -- (277.83,171.01) ;
+		\draw [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,draw opacity=1 ]   (152.25,118.99) -- (240.5,213) ; 
+		\draw [color={rgb, 255:red, 189; green, 16; blue, 224 }  ,draw opacity=1 ]   (152.25,118.99) -- (189.22,247) ; 
+		\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (152.25,118.99) -- (129.35,230.99) ;
+		\draw  [dash pattern={on 4.5pt off 4.5pt}]  (277.83,47.01) -- (299.35,107.01) ;
+		\draw  [dash pattern={on 4.5pt off 4.5pt}]  (299.35,107.01) -- (277.83,171.01) ;
+		\draw  [dash pattern={on 4.5pt off 4.5pt}]  (277.83,171.01) -- (240.5,213) ; 
+		\draw  [dash pattern={on 4.5pt off 4.5pt}]  (240.5,213) -- (189.22,247) ; 
+		\draw  [dash pattern={on 4.5pt off 4.5pt}]  (129.35,230.99) -- (189.22,247) ; 
+		\draw   (382,138) .. controls (382,85.53) and (424.53,43) .. (477,43) .. controls (529.47,43) and (572,85.53) .. (572,138) .. controls (572,190.47) and (529.47,233) .. (477,233) .. controls (424.53,233) and (382,190.47) .. (382,138) -- cycle ;
+		\draw [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ]   (477,138) -- (477,43) ; 
+		\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (477,138) -- (387,110.04) ;
+		\draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (477,138) -- (569,114.04) ; 
+		\draw [color={rgb, 255:red, 189; green, 16; blue, 224 }  ,draw opacity=1 ]   (477,138) -- (435,222.04) ;
+		\draw [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,draw opacity=1 ]   (477,138) -- (514,225.04) ;
+		\draw [color={rgb, 255:red, 139; green, 87; blue, 42 }  ,draw opacity=1 ]   (477,138) -- (562,183.04) ;
+		\draw  [draw opacity=0] (171.31,108.67) .. controls (173.55,110.06) and (175.56,112.62) .. (176.74,115.91) .. controls (176.82,116.12) and (176.9,116.34) .. (176.96,116.55) -- (169.37,119.02) -- cycle ; \draw   (171.31,108.67) .. controls (173.55,110.06) and (175.56,112.62) .. (176.74,115.91) .. controls (176.82,116.12) and (176.9,116.34) .. (176.96,116.55) ;  
+		\draw  [draw opacity=0] (175.31,128.07) .. controls (174.71,128.88) and (173.97,129.72) .. (173.12,130.53) .. controls (170.58,132.97) and (167.8,134.46) .. (166.17,134.39) -- (170.95,128.5) -- cycle ; \draw   (175.31,128.07) .. controls (174.71,128.88) and (173.97,129.72) .. (173.12,130.53) .. controls (170.58,132.97) and (167.8,134.46) .. (166.17,134.39) ;  
+		\draw  [draw opacity=0] (184.12,116.77) .. controls (185.15,118.24) and (185.74,120.51) .. (185.62,123.06) .. controls (185.41,127.48) and (183.15,131.08) .. (180.54,131.16) -- (180.85,123.1) -- cycle ; \draw   (184.12,116.77) .. controls (185.15,118.24) and (185.74,120.51) .. (185.62,123.06) .. controls (185.41,127.48) and (183.15,131.08) .. (180.54,131.16) ;  
+		\draw  [draw opacity=0] (171.47,138.17) .. controls (170.68,139.78) and (169.34,141.66) .. (167.62,143.47) .. controls (165.22,145.99) and (162.66,147.76) .. (160.81,148.33) -- (165.22,141.18) -- cycle ; \draw   (171.47,138.17) .. controls (170.68,139.78) and (169.34,141.66) .. (167.62,143.47) .. controls (165.22,145.99) and (162.66,147.76) .. (160.81,148.33) ;  
+		\draw  [draw opacity=0] (162.46,152.86) .. controls (155.35,156.14) and (148.78,158.08) .. (144.99,158.22) -- (160.81,148.33) -- cycle ; \draw   (162.46,152.86) .. controls (155.35,156.14) and (148.78,158.08) .. (144.99,158.22) ;  
+		\draw (136.4,103.99) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,opacity=1 ,rotate=-0.01] [align=left] {A};
+		\draw (290.01,28.01) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ,rotate=-0.01] [align=left] {1};
+		\draw (302.47,95.02) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 248; green, 231; blue, 28 }  ,opacity=1 ,rotate=-0.01] [align=left] {2};
+		\draw (284.92,163.01) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 139; green, 87; blue, 42 }  ,opacity=1 ,rotate=-0.01] [align=left] {3};
+		\draw (245.46,221.01) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,opacity=1 ,rotate=-0.01] [align=left] {4};
+		\draw (187.17,256) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 189; green, 16; blue, 224 }  ,opacity=1 ,rotate=-0.01] [align=left] {5};
+		\draw (113.28,238.98) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ,rotate=-0.01] [align=left] {6};
+		\draw (453.4,136.99) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,opacity=1 ,rotate=-0.01] [align=left] {A};
+		\draw (469.01,22.01) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ,rotate=-0.01] [align=left] {1};
+		\draw (578.47,102.02) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 248; green, 231; blue, 28 }  ,opacity=1 ,rotate=-0.01] [align=left] {2};
+		\draw (567.92,181.01) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 139; green, 87; blue, 42 }  ,opacity=1 ,rotate=-0.01] [align=left] {3};
+		\draw (514.46,234.01) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,opacity=1 ,rotate=-0.01] [align=left] {4};
+		\draw (417.17,228) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 189; green, 16; blue, 224 }  ,opacity=1 ,rotate=-0.01] [align=left] {5};
+		\draw (369.28,99.98) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ,rotate=-0.01] [align=left] {6};
+	\end{tikzpicture}
+\end{center}
+Giả sử mỗi điểm trên mặt phẳng nối được ít nhất 6 điểm A là điểm bất kỳ và 6 điểm từ 1-6 như hình\\
+$\Rightarrow \widehat{A_1}+\widehat{A_2}+\widehat{A_3}+\widehat{A_4}+\widehat{A_5}+\widehat{A_6}\geq 360^\circ$
+\\Trong $\triangle$ 1A2 chọn
+$\begin{cases}
+	\widehat{1A2} > \widehat{A12}\\
+	\widehat{1A2} > \widehat{A21}
+\end{cases}\\
+\rightarrow \widehat{1A2} > 60^\circ$
+\\Tương tự:\\
+$\Rightarrow \widehat{1A2} +\widehat{2A3}+\widehat{3A4}+\widehat{4A5}+\widehat{5A6}> 360^\circ$(vô lý)\\
+$\Rightarrow$ Giả sử sai
+$\Rightarrow$ đpcm
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 2.}} Một trung tâm máy tính có 151 máy vi tính. Các máy của trung tâm được đặt tên bởi một số nguyên dương trong khoảng từ 1 đến 300 sao cho không có hai máy nào được đặt tên trùng nhau. Chứng minh rằng luôn tìm được 2 máy có tên là các số nguyên liên tiếp.}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{itemize}
+	\item[{\bf \underline{Cách 1:}}] 
+	Giả sử 150 máy đánh số từ 1-300\\
+	Để thỏa mãn yêu cầu bài toán thì các máy đánh số lẻ hoặc chẵn\\
+	$\rightarrow$ Khi thêm 1 máy với số bất kỳ từ 1-300 thì ta được đpcm
+	\item[{\bf \underline{Cách 2:}}]
+	Chia khoảng 1-300 thành 150 cặp liên tiếp\\
+	$\rightarrow$ Theo nguyên tắc Dirichlet số máy trong 1 cặp ko ít hơn $\begin{bmatrix}
+		\dfrac{300}{151}
+	\end{bmatrix}=2$
+	\\ $\rightarrow$ Có ít nhất 2 máy có tên là 2 số liên tiếp.
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 3.}}  Các học sinh của một lớp học gồm 45 nam và 35 nữ được xếp ra thành một hàng ngang. Chứng minh rằng, trong hàng đó luôn tìm được hai học sinh nam mà ở giữa họ có 8 người đứng xen vào.}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+$(1;10),(2,11),..(9,18)\\
+(19,28),(20,290,...(27,36)\\
+(37,46),(38,47)\\
+(55,64),(65,74)$\\
+72 học sinh đầu chia làm 36 cặp.\\
+8 học sinh cuối với 8 cặp.
+(64,73),(65,74),...,(71,80).
+$\Rightarrow$ có 44 cặp\\
+Mà có 45 học sinh nam nên luôn có ít nhất 2 bạn học sinh nam trong 1 cặp.\\
+$\Rightarrow$ đpcm
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 4.}} Có 12 cầu thủ bóng rổ đeo áo với số từ 1 đến 12 đứng tập trung thành mọt vòng tròn giữa sân. Chứng minh rằng luôn tìm được 3 người liên tiếp có tổng các số trên áo là lớn hơn hoặc bằng 20.}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Tổng số áo: 1+2+3+...+12=$\dfrac{13.12}{2}=78$\\
+Chia 12 người thành 4 nhóm, mỗi nhóm có 3 cầu thủ liên tiếp.\\
+Do tổng số áo là 78 nên có ít nhất 1 nhóm có tổng số áo ko ít hơn $\dfrac{78}{4}=19.5$\\
+$\Rightarrow$ Có ít nhất 1 nhóm 3 người liên tiếp  có tổng số áo lớn hơn hoặc bằng 20.
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 5.}} Chứng minh rằng trong số 10 người bất kỳ bào giờ cũng tìm được hoặc là hai người có tổng số tuổi là chia hết cho 16, hoặc là hai người mà hiệu số tuổi của họ là chia hết cho 16.}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Gọi số dư tuổi 10 người khi chia cho 16 là $a_i$, $i \in \{1,..,10\}$
+\\ $\rightarrow a_i \in \{1,..,15\}$\\
+\begin{itemize}
+	\item[{\bf \underline{TH1:}}] 2 số dư bằng nhau\\
+	$\exists a_i = a_j \Rightarrow$ đpcm vì có có hiệu số chia hết cho 16
+	\item[{\bf \underline{TH2:}}] 2 số dư khác nhau
+	\\Ta có 16+0=15+1=14+2=...=8+8 \\
+	Do 10 số mà có 9 tổng nên theo nguyên tắc Dirichlet thì có 2 số trong các số $a_i \in$ cùng 1 tổng.\\
+	$\Rightarrow$ tổng của chúng chia hết cho 16(đpcm)
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 6.}} Cần có ít nhất bao nhiêu bộ có thứ tự gồm 2 số nguyên $(a,b)$ sao cho chắc chắn tìm được trong số 2 số đó hai bộ $(c,d)$ và $(e,f)$ sao cho $c-e$ và $d-f$ là các số có chữ số tận cùng bằng 0 ?
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\indent\hspace{1cm}Trước hết ta có chú ý sau: muốn có 2 số có cùng số dư khi chia cho 10 ta cần chọn 2 số trong đó có 11 số bất kì. Điều này đúng theo định lý Dirichlet.\\
+Ta xét các cặp số (a,b) bất kì. Chia các cặp số này thành 10 nhóm có số dư của a khi chia cho 10 lần lượt là 0,1,2,..,9. Như vậy 2 cặp số (a1,a2) và (a3,a4) trong cùng 1 nhóm thì a1 và a3 có cùng số dư khi chia cho 10. Do đó ta chỉ cần tìm số cặp số (a,b) sao cho có ít nhất 1 nhóm trong số 10 nhóm trên có ít nhất 11 cặp số. Lúc đó trong nhóm vừa nêu sẽ có 2 cặp số (d-f) cũng tận cùng bằng 0. Do có 10 nhóm nên để tồn tại ít nhất 1 nhóm có ít nhất 11 cặp thì số cặp (a,b) cần chọn là: 10*10+1=101 cặp.\\
+\indent\hspace{1cm} Vậy nếu ta chọn ra 101 cặp số nguyên (a,b) có thứ tự bất kì thì luôn tồn tại 2 cặp số (c,d) và (e,f) sao cho (c-e) và (d-f) tận cùng bằng 0(đpcm). \\
+\indent\hspace{1cm} Có thể kiểm tra lại điều này bằng cách cho 101 cặp số bất kỳ và chứng mình tồn tại 2 căp (c,d) và (e,f) thỏa mãn điều kiện bài toán nhưng lấy 100 số là không thể được.
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 7.}} 17 nhà bác học đôi một viết thư trao đổi cho nhau về 3 chủ đề, mỗi cặp chỉ trao đổi với nhau về 1 chủ đề. Chứng minh rằng luôn tìm được 3 nhà bác học đôi một viết thư trao đổi cho nhau về cùng một chủ đề.}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Nhà bác học A trao đổi với 16 nhà bác học khác\\
+Do chỉ trao đổi về 3 vấn đề nên theo nguyên lý Dirichlet số nhà bác học cùng trao đổi về cùng 1 vấn đề không ít hơn $\dfrac{16}{5}=5.33 \rightarrow 6$\\
+Tiếp tục trong 6 nhà bác học B bất kỳ trong 6 nhà bác học đó\\
+\begin{itemize}
+	\item Nếu có 1 trong 5 nhà bác học còn lại viết thư trao đổi với B $\rightarrow$ đpcm
+	\item B viết thư trao đôi với 5 người còn lại về 2 vấn đề, theo nguyên lý Dirichlet $\rightarrow \exists$ 3 người trao đổi với B về cùng 1 vấn đề. Giả sử vấn đề đó là x.
+	\begin{itemize}
+		\item Trong 3 người trao đổi về vấn đề x $\rightarrow$  đpcm.
+		\item Trong 3 người không ai trao đổi về vấn đề còn lại $\rightarrow$ đpcm.
+	\end{itemize}
+\end{itemize}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 8.}} Trong không gian cho 9 điểm có tọa độ nguyên. Chứng minh rằng trong số 9 điểm đã cho luôn tìm được 2 điểm sao cho đoạn thẳng nối chúng đi qua điểm có tọa độ nguyên}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{center}
+	
+	
+	\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+	\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+		\draw  [fill={rgb, 255:red, 208; green, 2; blue, 27 }  ,fill opacity=1 ] (100,86) .. controls (100,83.24) and (102.24,81) .. (105,81) .. controls (107.76,81) and (110,83.24) .. (110,86) .. controls (110,88.76) and (107.76,91) .. (105,91) .. controls (102.24,91) and (100,88.76) .. (100,86) -- cycle ;
+		\draw  [fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=1 ] (150,94.5) .. controls (150,92.01) and (152.01,90) .. (154.5,90) .. controls (156.99,90) and (159,92.01) .. (159,94.5) .. controls (159,96.99) and (156.99,99) .. (154.5,99) .. controls (152.01,99) and (150,96.99) .. (150,94.5) -- cycle ;
+		%Shape: Ellipse [id:dp25259169397830705] 
+		\draw  [fill={rgb, 255:red, 139; green, 87; blue, 42 }  ,fill opacity=1 ] (99,155.5) .. controls (99,153.01) and (101.01,151) .. (103.5,151) .. controls (105.99,151) and (108,153.01) .. (108,155.5) .. controls (108,157.99) and (105.99,160) .. (103.5,160) .. controls (101.01,160) and (99,157.99) .. (99,155.5) -- cycle ;
+		%Shape: Ellipse [id:dp8174897885246695] 
+		\draw  [fill={rgb, 255:red, 126; green, 211; blue, 33 }  ,fill opacity=1 ] (209,114.5) .. controls (209,112.01) and (211.24,110) .. (214,110) .. controls (216.76,110) and (219,112.01) .. (219,114.5) .. controls (219,116.99) and (216.76,119) .. (214,119) .. controls (211.24,119) and (209,116.99) .. (209,114.5) -- cycle ;
+		\draw  [fill={rgb, 255:red, 189; green, 16; blue, 224 }  ,fill opacity=1 ] (151,135.5) .. controls (151,133.01) and (153.01,131) .. (155.5,131) .. controls (157.99,131) and (160,133.01) .. (160,135.5) .. controls (160,137.99) and (157.99,140) .. (155.5,140) .. controls (153.01,140) and (151,137.99) .. (151,135.5) -- cycle ;
+		\draw  [fill={rgb, 255:red, 80; green, 227; blue, 194 }  ,fill opacity=1 ] (191,85.5) .. controls (191,83.01) and (193.01,81) .. (195.5,81) .. controls (197.99,81) and (200,83.01) .. (200,85.5) .. controls (200,87.99) and (197.99,90) .. (195.5,90) .. controls (193.01,90) and (191,87.99) .. (191,85.5) -- cycle ;
+		\draw  [fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ] (219,155.5) .. controls (219,153.01) and (221.01,151) .. (223.5,151) .. controls (225.99,151) and (228,153.01) .. (228,155.5) .. controls (228,157.99) and (225.99,160) .. (223.5,160) .. controls (221.01,160) and (219,157.99) .. (219,155.5) -- cycle ;
+		\draw  [dash pattern={on 4.5pt off 4.5pt}]  (85,65) -- (155.5,135.5) -- (176,157) ;
+		\draw (100,59) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		\draw (150,111) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+	\end{tikzpicture}
+	% \caption{8 chấm bất kỳ}
+\end{center}
+Xét 1 điểm bất kỳ trong không gian có tọa độ nguyên (x,y,z)\\
+x,y,z có thể là chẵn hoặc lẻ $\rightarrow$ có đúng $2^3=8$ bộ số (x,y,z) thỏa mãn 2 bộ bất kỳ.
+\\Do  có 9 điểm trong mặt phẳng, theo nguyên lý Dirichlet $\exists$ ít nhất 2 điểm có cùng tọa độ chẵn lẻ. VD cùng  ccc,lll,clc.\\
+$\Rightarrow$  Trung điểm của 2 điểm đó cùng có tọa độ nguyên(cộng tọa độ vào rồi chia 2 ra cùng đều là số nguyên)\\
+$\Rightarrow$ đpcm\\
+Có thể suy nghĩ giải bài này bằng phương pháp hình học vecto.
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 9.}} Chứng minh rằng trong số 10 người bất kỳ luôn tìm được hoặc là 4 người đôi một quen nhau và 3 người đôi một không quen nhau hoặc là 4 người đôi một không quen nhau và 4 người đôi một quen nhau. 
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\indent\hspace{1cm} Đây là bài toán ramsey nên chỉ áp dụng công thức, phần chứng minh tham khảo kĩ trong các giáo trình
+
+\subsection{Bài toán liệt kê}
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 1.}} Giả sử A, B,..., F trên hình là các hòn đảo và các đoạn nối là các cây cầu nối chúng. Một người du lịch khởi hành từ A đi từ hòn đảo này sang hòn đảo khác. Người du lịch sẽ dừng lại ăn trưa nếu như tiếp tục đi sẽ phải đi qua cái cầu nào đó hai lần.
+			\begin{enumerate}[label = \alph*)]
+				\item Liệt kê các cách mà người du lịch có thể đi cho đến khi dừng lại ăn trưa.
+				\item Cho biết những điểm nào người du lịch có thể dừng lại ăn trưa.
+			\end{enumerate}
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Hình vẽ:
+\begin{center}
+	\tikzset{every picture/.style={line width=0.75pt}} %set 
+	\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+		\draw   (91,155) .. controls (91,146.72) and (97.72,140) .. (106,140) .. controls (114.28,140) and (121,146.72) .. (121,155) .. controls (121,163.28) and (114.28,170) .. (106,170) .. controls (97.72,170) and (91,163.28) .. (91,155) -- cycle ;
+		\draw   (190,155) .. controls (190,146.72) and (196.72,140) .. (205,140) .. controls (213.28,140) and (220,146.72) .. (220,155) .. controls (220,163.28) and (213.28,170) .. (205,170) .. controls (196.72,170) and (190,163.28) .. (190,155) -- cycle ;
+		\draw   (281,156) .. controls (281,147.72) and (287.72,141) .. (296,141) .. controls (304.28,141) and (311,147.72) .. (311,156) .. controls (311,164.28) and (304.28,171) .. (296,171) .. controls (287.72,171) and (281,164.28) .. (281,156) -- cycle ;
+		\draw   (370,156) .. controls (370,147.72) and (376.72,141) .. (385,141) .. controls (393.28,141) and (400,147.72) .. (400,156) .. controls (400,164.28) and (393.28,171) .. (385,171) .. controls (376.72,171) and (370,164.28) .. (370,156) -- cycle ;
+		\draw   (190,246) .. controls (190,237.72) and (196.72,231) .. (205,231) .. controls (213.28,231) and (220,237.72) .. (220,246) .. controls (220,254.28) and (213.28,261) .. (205,261) .. controls (196.72,261) and (190,254.28) .. (190,246) -- cycle ;
+		\draw   (281,246) .. controls (281,237.72) and (287.72,231) .. (296,231) .. controls (304.28,231) and (311,237.72) .. (311,246) .. controls (311,254.28) and (304.28,261) .. (296,261) .. controls (287.72,261) and (281,254.28) .. (281,246) -- cycle ;
+		\draw    (121,155) -- (190,155) ;
+		\draw    (220,155) -- (281,156) ;
+		\draw    (311,156) -- (370,156) ;
+		\draw    (205,170) -- (205,231) ;
+		\draw    (296,171) -- (296,231) ;
+		\draw    (220,246) -- (281,246) ;
+		\draw    (216,165) -- (285,235) ;
+		\draw (100,146) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (199,146) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (291,147) node [anchor=north west][inner sep=0.75pt]   [align=left] {C};
+		% Text Node
+		\draw (379,147) node [anchor=north west][inner sep=0.75pt]   [align=left] {D};
+		% Text Node
+		\draw (287,238) node [anchor=north west][inner sep=0.75pt]   [align=left] {F};
+		% Text Node
+		\draw (198,238) node [anchor=north west][inner sep=0.75pt]   [align=left] {E};
+	\end{tikzpicture}
+\end{center}
+\begin{enumerate}[label = \alph*)]
+	\item \indent\vspace{0.1cm}
+	\begin{center}
+		
+		
+		\tikzset{every picture/.style={line width=0.75pt}}         
+		
+		\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+			
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (309.67,31) -- (309.67,71) ;
+			%Straight Lines [id:da3372213997998421] 
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (301.67,85.56) -- (229.67,120.23) ;
+			%Straight Lines [id:da01398894245819271] 
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (309.67,94.89) -- (309.67,153.56) ;
+			%Straight Lines [id:da9286263195818516] 
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (317.67,85.56) -- (391,120.23) ;
+			%Straight Lines [id:da7905120373644445] 
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (217.67,138.31) -- (217.67,167.33) ;
+			%Straight Lines [id:da6309583384214108] 
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (217.67,196.67) -- (217.67,228.67) ;
+			%Straight Lines [id:da6833901844444044] 
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (216.33,263.64) -- (216.33,292.67) ;
+			%Straight Lines [id:da576617410467769] 
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (299,179.33) -- (276.33,200.67) ;
+			%Straight Lines [id:da014362979025206668] 
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (315,178) -- (339,198) ;
+			%Straight Lines [id:da6195442784554968] 
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (348.33,219.64) -- (348.33,248.67) ;
+			%Straight Lines [id:da30987201279724585] 
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (415,130.31) -- (435,148.67) ;
+			%Straight Lines [id:da39023853229803573] 
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ][fill={rgb, 255:red, 80; green, 227; blue, 194 }  ,fill opacity=1 ]   (393.67,130.31) -- (377.67,150) ;
+			%Straight Lines [id:da6673477004488761] 
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (376.33,175.64) -- (376.33,204.67) ;
+			
+			% Text Node
+			\draw (303.33,10.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+			% Text Node
+			\draw (303.33,75) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+			% Text Node
+			\draw (211.33,117) node [anchor=north west][inner sep=0.75pt]   [align=left] {E};
+			% Text Node
+			\draw (212.67,174.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {F};
+			% Text Node
+			\draw (210,239.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {C};
+			% Text Node
+			\draw (210,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {D};
+			% Text Node
+			\draw (303.33,162.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {F};
+			% Text Node
+			\draw (259.33,198.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {E};
+			% Text Node
+			\draw (341,201) node [anchor=north west][inner sep=0.75pt]   [align=left] {C};
+			% Text Node
+			\draw (430,153.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {D};
+			% Text Node
+			\draw (398.33,117.89) node [anchor=north west][inner sep=0.75pt]   [align=left] {C};
+			% Text Node
+			\draw (371.33,154.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {F};
+			% Text Node
+			\draw (342,253.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {D};
+			% Text Node
+			\draw (368.67,209) node [anchor=north west][inner sep=0.75pt]   [align=left] {E};
+			
+		\end{tikzpicture}
+	\end{center}
+	\item $D, E$ là những điểm  người du lịch có thể dừng lại ăn trưa.
+\end{enumerate}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 2.}} Hai đội bóng chuyền A, B thi đấu trong một giải vô địch quốc gia. Đội thắng trong trận đấu sẽ là đội giành được ba hiêp thằng trước. Hãy liệt kê tất cả các khả năng có thể của trận đấu giữa hai đội đó.}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{center}
+	
+	
+	\tikzset{every picture/.style={line width=0.75pt}} %set 
+	\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+		\draw  [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ,fill opacity=1 ] (292.5,7.84) .. controls (292.5,6.55) and (293.55,5.5) .. (294.84,5.5) .. controls (296.14,5.5) and (297.19,6.55) .. (297.19,7.84) .. controls (297.19,9.14) and (296.14,10.19) .. (294.84,10.19) .. controls (293.55,10.19) and (292.5,9.14) .. (292.5,7.84) -- cycle ;
+		%Straight Lines [id:da37309096375822515] 
+		\draw    (294.84,7.84) -- (211.24,49.28) ;
+		%Straight Lines [id:da9728970439737419] 
+		\draw    (294.84,7.84) -- (388,49.16) ;
+		%Straight Lines [id:da18058382228058] 
+		\draw    (186,74.16) -- (152,106.16) ;
+		%Straight Lines [id:da20681359454585913] 
+		\draw    (134,133.16) -- (115,163.16) ;
+		%Straight Lines [id:da820826515655044] 
+		\draw    (213,77) -- (243,110) ;
+		%Straight Lines [id:da8278572090938459] 
+		\draw    (398,80) -- (377,104) ;
+		%Straight Lines [id:da08272383430738373] 
+		\draw    (416,76) -- (444,107) ;
+		%Straight Lines [id:da6331668950533136] 
+		\draw    (459,131) -- (485,163) ;
+		%Straight Lines [id:da9027069677096826] 
+		\draw    (241,133) -- (220,160) ;
+		%Straight Lines [id:da9543267168651881] 
+		\draw    (260,133) -- (283,162) ;
+		%Straight Lines [id:da4469533830298007] 
+		\draw    (199,184) -- (177,216) ;
+		%Straight Lines [id:da6374090286282446] 
+		\draw    (217,185) -- (230,218) ;
+		%Straight Lines [id:da27638639949467336] 
+		\draw    (288,183) -- (274,219) ;
+		%Straight Lines [id:da7950007097018048] 
+		\draw    (299,183) -- (313,217) ;
+		%Straight Lines [id:da7615265813830756] 
+		\draw    (262,246) -- (252,270.2) ;
+		%Straight Lines [id:da7499244172863373] 
+		\draw    (276,246) -- (291,271) ;
+		%Straight Lines [id:da055263236219383005] 
+		\draw    (361,130) -- (351,154.2) ;
+		%Straight Lines [id:da8673402765157083] 
+		\draw    (383,129) -- (398,154) ;
+		%Straight Lines [id:da1565479195931465] 
+		\draw    (346,176) -- (336,200.2) ;
+		%Straight Lines [id:da771963192852761] 
+		\draw    (354,178) -- (369,203) ;
+		%Straight Lines [id:da9834807773008136] 
+		\draw    (405,172) -- (395,196.2) ;
+		%Straight Lines [id:da3679788637550956] 
+		\draw    (420,171) -- (435,196) ;
+		%Straight Lines [id:da2855820719874189] 
+		\draw    (368,226) -- (358,250.2) ;
+		%Straight Lines [id:da49171884626282547] 
+		\draw    (382,226) -- (397,251) ;
+		%Straight Lines [id:da30200615971937106] 
+		\draw    (438,227) -- (428,251.2) ;
+		%Straight Lines [id:da874550886268346] 
+		\draw    (452,227) -- (465,248.72) ;
+		%Straight Lines [id:da506709462810732] 
+		\draw    (231,241.2) -- (232,269.2) ;
+		
+		\draw (193,59) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (398,57) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (136,113) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (98,169) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (245,113) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (364,110) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (447,110) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (485,171) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (203,164) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (285,165) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (165,223) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (227,222) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (312,227) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (264,224) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (350,254) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (293,274) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (343,159) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (405,155) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (325,205) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (371,206) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (245,275) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (394,256) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (224,272) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (390,206) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+		% Text Node
+		\draw (435,204) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (420,255) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+		% Text Node
+		\draw (467,251.72) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+	\end{tikzpicture}
+\end{center}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 3.}} Liệt kê tất cả các cách mất thứ tự của 4 số tự nhiên 1;2;3;4}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Công thức:\\
+\indent\vspace{1cm} $D_4 = 4! (1-\frac{1}{1!}+\frac{1}{2!}-\frac{1}{3!}+\frac{1}{4!})=9$\\
+Các số thỏa mãn:
+\begin{tabular}{ccc}
+	2143&3142&4123  \\
+	2341&3412&4312\\
+	2413&3421&4321
+\end{tabular}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 4.}} Liệt kê các xâu nhị phân độ dài 5 không chứa hai số 0 liên tiếp}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{center}
+	
+	
+	\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+	
+	\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+		\draw  [fill={rgb, 255:red, 184; green, 233; blue, 134 }  ,fill opacity=1 ] (349.44,5.22) .. controls (349.44,3.13) and (351.13,1.44) .. (353.22,1.44) .. controls (355.31,1.44) and (357,3.13) .. (357,5.22) .. controls (357,7.31) and (355.31,9) .. (353.22,9) .. controls (351.13,9) and (349.44,7.31) .. (349.44,5.22) -- cycle ;
+		%Straight Lines [id:da9817535762861478] 
+		\draw    (353.22,5.22) -- (379.11,19.77) ;
+		%Straight Lines [id:da9156476863105116] 
+		\draw    (353.22,5.22) -- (330,21) ;
+		%Straight Lines [id:da31614044308826816] 
+		\draw    (316,39) -- (297,59) ;
+		%Straight Lines [id:da2879910131238115] 
+		\draw    (394.11,40.11) -- (406,61) ;
+		%Straight Lines [id:da7760446579282938] 
+		\draw    (281,80) -- (262,105) ;
+		%Straight Lines [id:da24846548162753734] 
+		\draw    (295,81) -- (301,105) ;
+		%Straight Lines [id:da5900468957154004] 
+		\draw    (246,127) -- (230,149) ;
+		%Straight Lines [id:da7807690728739063] 
+		\draw    (296,127) -- (277,158) ;
+		%Straight Lines [id:da3108336952111521] 
+		\draw    (310,129) -- (319,157) ;
+		%Straight Lines [id:da25982372771208984] 
+		\draw    (215,168) -- (197,194) ;
+		%Straight Lines [id:da5004085239376181] 
+		\draw    (418,83) -- (435,112) ;
+		%Straight Lines [id:da4097342138449902] 
+		\draw    (380,39.28) -- (304,71) ;
+		%Straight Lines [id:da3203255606486648] 
+		\draw    (264,173) -- (245,196) ;
+		%Straight Lines [id:da7000932848595272] 
+		\draw    (274,176) -- (283,199) ;
+		%Straight Lines [id:da01863864623045064] 
+		\draw    (324,177) -- (333,204) ;
+		%Straight Lines [id:da9717609461396992] 
+		\draw    (436,131) -- (422,150) ;
+		%Straight Lines [id:da4080077055280267] 
+		\draw    (449,133) -- (457,149) ;
+		%Straight Lines [id:da24364851637642126] 
+		\draw    (407,166) -- (387,198) ;
+		%Straight Lines [id:da4758837061888863] 
+		\draw    (423,170) -- (431,197) ;
+		%Straight Lines [id:da6721758367657698] 
+		\draw    (470,170) -- (481,195) ;
+		
+		\draw (320.2,23) node [anchor=north west][inner sep=0.75pt]   [align=left] {0};
+		% Text Node
+		\draw (381.11,22.77) node [anchor=north west][inner sep=0.75pt]   [align=left] {1};
+		% Text Node
+		\draw (284.11,61.77) node [anchor=north west][inner sep=0.75pt]   [align=left] {1};
+		% Text Node
+		\draw (408,64) node [anchor=north west][inner sep=0.75pt]   [align=left] {0};
+		% Text Node
+		\draw (249.2,110) node [anchor=north west][inner sep=0.75pt]   [align=left] {0};
+		% Text Node
+		\draw (297.11,109.77) node [anchor=north west][inner sep=0.75pt]   [align=left] {1};
+		% Text Node
+		\draw (217.11,153.77) node [anchor=north west][inner sep=0.75pt]   [align=left] {1};
+		% Text Node
+		\draw (262.11,157.77) node [anchor=north west][inner sep=0.75pt]   [align=left] {1};
+		% Text Node
+		\draw (314.2,158) node [anchor=north west][inner sep=0.75pt]   [align=left] {0};
+		% Text Node
+		\draw (184.11,201.77) node [anchor=north west][inner sep=0.75pt]   [align=left] {1};
+		% Text Node
+		\draw (437,115) node [anchor=north west][inner sep=0.75pt]   [align=left] {1};
+		% Text Node
+		\draw (235.11,201.77) node [anchor=north west][inner sep=0.75pt]   [align=left] {1};
+		% Text Node
+		\draw (278.2,207) node [anchor=north west][inner sep=0.75pt]   [align=left] {0};
+		% Text Node
+		\draw (328.11,209.77) node [anchor=north west][inner sep=0.75pt]   [align=left] {1};
+		% Text Node
+		\draw (410.11,153.77) node [anchor=north west][inner sep=0.75pt]   [align=left] {1};
+		% Text Node
+		\draw (459,152) node [anchor=north west][inner sep=0.75pt]   [align=left] {0};
+		\draw (376.11,204.77) node [anchor=north west][inner sep=0.75pt]   [align=left] {1};
+		% Text Node
+		\draw (426,204) node [anchor=north west][inner sep=0.75pt]   [align=left] {0};
+		% Text Node
+		\draw (480.11,203.77) node [anchor=north west][inner sep=0.75pt]   [align=left] {1};
+	\end{tikzpicture}
+\end{center}
+
+
+
+\subsection{Bài toán tối ưu}
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 2.}} Giải các bài toán cái túi sau đây bằng thuật toán nhánh cận. Quá trình thực hiện thuật.
+			\begin{enumerate}[label = \alph*)]
+				\item $17x_1+8x_2+6x_3+3x_4 \rightarrow \text{max}\\
+				\indent\hspace{0.3cm} 7x_1+6x_2+4x_3+2x_4\leq 19\\
+				x_j \geq 0, \text{ nguyên}, j = 1;2;3;4$
+				\item $16x_1+9x_2+7x_3+5x_4\rightarrow \text{max}\\
+				\indent\hspace{0.3cm} 6x_1+5x_2+3x_3+2x_4 \leq 17\\
+				x_j \geq 0, \text{ nguyên}, j = 1;2;3;4$
+				\item $16x_1+8x_2+6x_3+x_4\rightarrow \text{max}\\
+				\indent\hspace{0.3cm} 7x_1+6x_2+4x_3+x_4\leq 17\\
+				x_j \geq 0, \text{ nguyên}, j = 1;2;3;4$
+			\end{enumerate}
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+
+\begin{tcolorbox}[title=Trong bài toán tối ưu đặt:]
+	\begin{itemize}
+		\item[] $\sigma:$ Giá trị đồ vật đang có trong túi
+		\item[] $w:$ Khối lượng còn lại
+		\item[] $g:$ Cận trên
+		\item[] $g= \sigma_k+C_{k+1}$ 
+	\end{itemize}
+\end{tcolorbox}
+
+\begin{enumerate}[label = \alph*)]
+	\item 
+	
+	
+	\item
+	
+	
+	\item
+	
+	
+\end{enumerate}
+
+
+\chapter{Thuật toán và độ phức tạp của thuật toán}
+\section{Lý thuyết}
+\textcolor{cyan}{Lý thuyết}\\
+\xrfill{13cm}[blue]
+\xrfill{1pt}[cyan]
+\\\\
+Khi 1 thuật toán (Algorithm) có lời giải cho 1 bài toán trước tiên nó phải có đáp số đúng trước.\\
+Sự hiệu quả của thuật toán là thời gian mà máy tính sử dụng để giải quyết bài toán đó. Máy tính có thể tính được hàng triệu phép tính (thời gian chỉ chênh nhau 0,00...1 s là đã có sự khác biệt rất lớn rồi.\\
+$\rightarrow$  Chương này sẽ giúp bạn làm thế nào để xác định thuật toán nào tối ưu hơn qua việc xác định độ phức tạp của thuật toán
+\subsection{Phải học gì}
+Học hết bỏ phần máy Turing và bài toán P, NP
+
+\section{Bài tập}
+\subsection{Thuật toán}
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 1.}} Viết thuật toán tìm tổng của các số tự nhiên.}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{lstlisting}
+	Enter n
+	S:=0, i = 0
+	For i ; i = i+1:
+	if i<= n then return S
+	print(S)
+\end{lstlisting}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 2.}} Viết thuật toán nhận danh sách n số tự nhiên và tìm số các số tự nhiên âm trong dãy.}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{lstlisting}
+	int main{
+		int a = [n]
+		int b = []
+		for i=0 to len(a):
+		if i < 0: 
+		b.append(i)
+		print(b)
+	}
+\end{lstlisting}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 3.}} Viết thuật toán tìm số x trong dãy số cho trước.}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+list là dãy cho trước
+\begin{lstlisting}
+	enter x
+	for i in list do:
+	if i == x:
+	return 1
+	else:
+	return 0
+\end{lstlisting}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 4.}} Cho một dãy đã sắp xếp theo chiều tăng. Viết thuật toán thêm số x vào vị trí thích hợp.}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\indent\hspace{1cm} a là mảng số cho trước
+\begin{lstlisting}
+	void swap(a,b)
+	a = a + b
+	b = a - b
+	a = a - b
+	int main{
+		int b = new int[i+1]
+		for i = 0 to n do b[i] = a[i]
+		b[i+1] = x
+		for i = n + 1 do
+		if b[i] < s then swap $(b_i, b_{i-1})$
+	}
+\end{lstlisting}
+
+\subsection{Đánh giá O-lớn}
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 1.}} Xác định xem mỗi hàm số sau có O(x)
+			\begin{enumerate}[label = \alph*)]
+				\item $f(x)=10$
+				\item $f(x)=3x+7$
+				\item $f(x)=x^2+x+1$
+				\item $f(x)=5\log x$
+			\end{enumerate}
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}[label = \alph*)]
+	\item $O(1)$
+	\item $f(x) = O(x)$
+	\item $f(x) = O(\lambda x^2)$
+	\item $f(x) = O(\log x)$
+\end{enumerate}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 2.}} Xác định xem mỗi hàm số sau có $O(x^2)$
+			\begin{enumerate}[label = \alph*)]
+				\item $f(x)=17x+11$
+				\item $f(x)=x^2+1000$
+				\item $f(x) = x\log x$
+				\item $f(x)=\dfrac{x^4}{2}$
+				\item $f(x)=2^x$
+			\end{enumerate}
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}
+	\item Không. Do $f(x)=O(x)$
+	\item $f(x)=O(x^2)$
+	\item 
+	$|x\log x| <|x^2| < c|x^2| $
+	\\$\Rightarrow f(x)= O(x^2)$
+	\item $f(x)=O(x^4)$
+	\item $f(x)=O(2^x)$
+\end{enumerate}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 3.}} Bằng định nghĩa "$f(x)$ là $O(g(x))$" để chứng minh:
+			\begin{enumerate}[label = \alph*)]
+				\item $x^4+9x^3+4x+7$ là $O(x^4)$
+				\item $2^x+17$ là $O(3^x)$
+				\item $\dfrac{x^2+1}{x+1}$ là $O(x)$
+				\item $\dfrac{x^3+2x}{2x+1}$ là $O(x^2)$
+			\end{enumerate}
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}[label = \alph*)]
+	\item $|x^4+9x^3+4x+7| \leq  c|x^4|$
+	\item $|2^n+17| \leq c|3^n|$
+	\item $|\dfrac{x^2+1}{x+1}|<O(x)$
+	\item $|\dfrac{2x^3+2x}{x+1}| \leq |x^2|$
+\end{enumerate}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 4.}} Tìm số tự nhiên n nhỏ nhất sao cho $f(x)$ là $O(x^n)$ cho mỗi hàm số sau:
+			\begin{enumerate}[label = \alph*)]
+				\item $f(x) = 2x^3+x^2\log x$
+				\item $f(x) = 3x^3+(\log x)^4$
+				\item $f(x) = \dfrac{x^4+x^2+1}{x^2+1}$
+				\item $f(x) = \dfrac{x^4+5\log x}{x^4+1}$
+			\end{enumerate}
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{enumerate}[label = \alph*)]
+	\item $f(x)=2x^3+x^2\log x < c|x^3|, \quad \forall x >1$
+	\item $f(x)=O(x^3)+O(\log x)^4=O(x^3)$
+	\item $f(x) = O(x^2)$
+	\item $f(x)=0(1)$
+\end{enumerate}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 5.}} Chứng minh rằng $x^2+4x+17$ là $O(x^3)$ nhưng $x^3$ không phải là $O(x^2+4x+17)$.}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{center}
+	$\displaystyle \lim_{x\rightarrow \infty} \left( \dfrac{x^2+4x+17}{x^3} \right)=0$
+\end{center}
+$\rightarrow x^2+4x+17$ có bậc là $cx^3(x^2+4x+17) \in O(x^3)$
+\begin{center}
+	$\displaystyle  \lim_{n\rightarrow \infty} \left( \dfrac{x^3}{x^2+4x+17} \right)=\infty$
+\end{center}
+$\rightarrow x^3$ cố bậc > $x^2+4x+17(x^3 \in \Omega (x^2+4x+17))$
+\\ $\rightarrow$ Đpcm.
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 6.}} Tương tự với $x^3$ là $O(x^4)$ nhưng $x^4$ không phải là $O(x^3)$}.
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{center}
+	$\displaystyle \lim_{x\rightarrow \infty} \left( \dfrac{x^3}{x^4} \right)=0$
+\end{center}
+$\rightarrow x^3$ có bậc là $cx^4(x^3) \in O(x^4)$
+\begin{center}
+	$\displaystyle  \lim_{n\rightarrow \infty} \left( \dfrac{x^4}{x^3} \right)=\infty$
+\end{center}
+$\rightarrow x^4$ có bậc > $x^3(x^4 \in \Omega (x^3))$
+\\ $\rightarrow$ Đpcm.
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 7.}} Tương tự $x\log x$ là $O(x^2)$ nhưng $x^2$ không phải là $O(x\log x)$}.
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+1 so sánh khá quen thuộc: $x\log x \leq x^2$
+\begin{center}
+	$\displaystyle \lim_{x\rightarrow \infty} \left( \dfrac{x\log x}{x^2} \right)=0$
+\end{center}
+$\rightarrow x\log x$ có bậc là $cx^2(x\log x \in O(x^2)$
+\begin{center}
+	$\displaystyle  \lim_{n\rightarrow \infty} \left( \dfrac{x^2}{x\log x} \right)=\infty$
+\end{center}
+$\rightarrow x^2$ có bậc > $x\log x(x^2 \in \Omega (x\log x))$
+\\ $\rightarrow$ Đpcm.
+
+
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 8.}} $2^n$ là $O(3^n)$ nhưng $3^n$ không phải là
+			$O(2^n)$.
+		} 
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+
+\begin{center}
+	$\displaystyle\lim_{n\rightarrow \infty} \left( \dfrac{2}{3}^n\right)=0$
+\end{center}
+$\rightarrow 2^n$ có bậc $c.3^n$ $(2^n \in O(3^n))$
+\begin{center}
+	$\displaystyle\lim_{n\rightarrow \infty} \left( \dfrac{3}{2}^n\right)=\infty$    
+\end{center}
+$\rightarrow 3^n$ có bậc > $2^n$ $(3^n \in \Omega (2^n))$
+\\ $\rightarrow$ đpcm.
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 10.}} Chứng minh rằng $f(x)$ là $O(x)$, thì $f(x)$ là $O(x^2)$.
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+
+Không chắc đề bài có sai không nhưng mà hình như không có hàm nào như vậy\\\\
+Để chứng minh rằng $f(x)$ là $O(x)$ thì ta phải tìm được một hằng số c và một điểm bđầu tư mà cho phép ta viết $f(x) \leq c . x$ cho mọi x > bđầu tư.\\
+
+Để chứng minh rằng $f(x)$ là $O(x^2)$ thì ta phải tìm được một hằng số c và một điểm bđầu tư mà cho phép ta viết $f(x) \leq c . x^2$ cho mọi x > bđầu tư.\\
+
+Như vậy, để chứng minh rằng $f(x)$ là $O(x^2)$ khi đã biết rằng $f(x)$ là $O(x)$, ta cần phải tìm được một hằng số c và một điểm bđầu tư mà cho phép ta viết $f(x) \leq c . x^2$ cho mọi x > bđầu tư.\\
+
+Nhưng không hẳn là có thể làm được điều đó. Ví dụ, hàm $f(x) = x^2 + x$ là $O(x)$ nhưng không phải là $O(x^2)$. Do đó, không thể chắc chắn rằng một hàm là $O(x)$ luôn có thể được chứng minh là $O(x^2)$
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 11.}} Giả sử $f(x), g(x)$ và $h(x)$ là các hàm số thỏa mãn $f(x)$ là $O(g(x))$ và $g(x)$ là $O(h(x))$. Chứng minh rằng $f(x)$ là $O(h(x)).$ }
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Có bài tương tự trong slide các bạn tự tham khảo
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 12.}} Cho k là số tự nhiên. Chứng minh rằng $1^k + 2^k+...+n^k$ là $O(n^{k+1})$}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Thao khảo 1 cách của con AI  GPT giải bằng cách quy nạp:
+Để chứng minh rằng $f(n)$ là $O(n^{k+1})$, ta cần phải tìm được một hằng số c và một điểm bđầu tư mà cho phép ta viết $f(n) \leq c . n^{k+1}$ cho mọi n > b đầu tư.\\
+
+Để làm điều đó, ta có thể tìm một hằng số c = 1 và một điểm bđầu tư b = 1. Cho n > 1, ta có\\
+
+$f(n) = 1^k + 2^k +\cdots + n^k
+\leq 1^k + 2^k + \cdots + n^{k+1}\\
+= (n^{k+1} + n^k +\cdots + 1) / (n - 1)
+\leq (n^{k+1} + n^{k+1} +\cdots + n^{k+1}) / (n - 1)\\
+= n^{k+1} . n / (n - 1)
+\leq n^{k+1}$\\\\
+Vậy $f(n) \leq 1 . n^{k+1}$ cho mọi n > 1, do đó $f(n)$ là $O(n^{k+1})$.\\\\
+Cách 2:
+\begin{tcolorbox}[title=Như đã biết thì ta luôn có:]
+	$\displaystyle \sum_{n=1}^{\infty} x^n=\displaystyle \sum_{n=1}^{\infty} nx^{n-1} $
+\end{tcolorbox}
+$\Rightarrow f(x) = O(n^{k+1})$
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 13.}} Giả sử có 2 thuật toán khác nhau để giải quyết một vấn đề. Để giải quyết 1 vấn đề có kích thước là n, thì thuật toán đầu tiên sử dụng chính xác $n(\log n)$ toán tử và thuật toán thứ 2 là $n^{\frac{3}{2}}$.  Đối với n thì thuật toán nào sử dụng ít toán tử hơn ?
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+$f(x) = n(\log n) = O(x^2)$\\
+$g(x) = n^{\frac{3}{2}}= O(x^{\frac{3}{2}}$\\
+Do vậy thuật toán $n^{\frac{3}{2}})$ sử dụng ít toán tử hơn.
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 14.}} Tương tự với $n^22^n$ và n!
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{tcolorbox}[title=Chú ý:]
+	$2^n>>n!$
+\end{tcolorbox}
+$f(x) = n^22^n = O(2^n)$\\
+$g(x)= n! =O(n!)$\\
+Do vậy thuật toán n! sử dụng ít toán tử hơn.
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 15.}} Đưa ra đánh giá $O$ của mỗi hàm sau:
+			\begin{enumerate}[label = \alph*)]
+				\item $(n^2+8)(n+1)$
+				\item $(n\log n +n^2)(n^3+2)$
+				\item $(n!+2^n)(n^3+\log (n^2+1))$
+			\end{enumerate}
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Bài này nhân ra rồi xét:\\
+\begin{enumerate}[label = \alph*)]
+	\item $O(n^3)$
+	\item $O(n^5)$
+	\item $O(n!)$
+\end{enumerate}
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 16.}}  Đưa ra đánh giá $O$ của mỗi hàm số sau. Đối với hàm số $g$ trong đánh giá $f(x)$ của bạn là $O(g(x))$, sử dụng $g(x)$ với bậc nhỏ.
+			\begin{enumerate}[label = \alph*)]
+				\item $(n^3+n^2\log n)(\log n +1)+(17\log n +19)(n^3+2)$
+				\item $(2^n+n^2)(n^3+3^n)$
+				\item $(n^n+n2^n+5^n)(n!+5^n)$
+			\end{enumerate}
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Ở bài này mình chỉ ghi kết quả các bạn khi trình bài phải ghi rõ quá trình
+\begin{enumerate}[label = \alph*)]
+	\item $O(n^4)$
+	\item $O(6^n)$
+	\item $O(n^n)$
+\end{enumerate}
+
+
+
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 17.}} Tương tự bài 16.
+			\begin{enumerate}[label = \alph*)]
+				\item $n\log (n^2+1)+n^2\log n$
+				\item $(n\log n +1)^2+(\log n +1)(n^2+1)$
+				\item $n^{2^n}+n^{n^2}$
+			\end{enumerate}
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Đánh giá một chút:
+\begin{enumerate}[label = \alph*)]
+	\item $n^2\log n \leq n\log(n^2+n^2) = 2n\log 2n \leq 2n^2 \rightarrow O(n^2)$ 
+	\item $O(n^4)+O(n^3)= O(n^4)$
+	\item \indent\hspace{0.5cm}$n^2<2^n, \qquad n \rightarrow \infty$\\
+	$\rightarrow n^{n^2} < n^{2n} , \qquad n \rightarrow \infty$\\
+	$\rightarrow n^{n^2} + n^{2n} < 2n^{2^n}$\\
+	$\rightarrow O(g(x)) = O(n^{2^n})$
+\end{enumerate}
+
+
+
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 18.}} Đối với mỗi hàm số ở bài 1, hãy  xác định $\Omega (x)$ và $O(x)$-lớn
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+
+
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 19.}} Đối với mỗi hàm số ở bài 2, hãy xác định $\Omega (x)$ và $O(x)$-lớn}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+
+
+
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 20.}} Chứng minh các hàm số sau có cùng cỡ
+			\begin{enumerate}[label = \alph*)]
+				\item $3x+7$ và x
+				\item $2x^2+x-7$ và $x^2$
+				\item $[x+1/2]$ và x
+				\item $\log (x^2+1)$ và $\log x$
+				\item $\log_{10} x$ và $\log x$
+			\end{enumerate}
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Bài này chỉ việc tính $\lim$ của 2 hàm từ định nghĩa $\Rightarrow$ đều bằng $Ô(x^n)$
+
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 21.}} Đưa ra đánh giá $O$-lớn cho số lượng toán tử (một toán tử là một phép cộng hoặc một phép nhân) sử dụng trong phân đoạn thuật toán sau
+			\\
+			t := 0\\
+			for i:= 1 to 3\\
+			\indent\hspace{1cm}for j :=  to 4\\
+			\indent\hspace{2cm}t := t + ij
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+Số phép toán là $3 \times 4 = 12$
+$\Rightarrow$ Độ phức tạp của thuật toán là $O(1)$
+
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 22.}} Đưa ra đánh giá $O-$lớn cho số lượng phép cộng sử dụng trong phân đoạn của thuật toán sau\\
+			t :=0\\
+			for i := 1 to n\\
+			\indent\hspace{1cm}for j := 1 to n\\
+			\indent\hspace{2cm}t := t + i +j
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{itemize}
+	\item[] $1\leq i \leq n$
+	\item[] $1 \leq j \leq n$
+	\item[] $t = t+i+j, t = 0$ 
+\end{itemize}
+$\Rightarrow$ Số lượng phép toán là n.n = $n^2$.\\
+$\Rightarrow$ Độ phức tạp của thuật toán là $O(n^2)$
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 23.}} Đưa ra đánh giá $O-$lớn cho số lượng các toán tử, mỗi toán tử là một phép so sánh hoặc phép nhân sử dụng trong phân đoạn sau của một thuật toán (lưu ý bỏ qua các so sánh để kiểm tra điều kiện trong các vòng lặp for xem $a_i$ là số thực dương)\\
+			m := 0\\
+			for i:= 1 to n\\
+			\indent\hspace{1cm}for j := i + 1 to n\\
+			\indent\hspace{2cm}m := max($a_ia_j$, m)
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+\begin{itemize}
+	\item[] $1\leq i \leq n$
+	\item[] $1 \leq j \leq n+1$
+\end{itemize}
+$\Rightarrow$ Số lượng phép toán là n.(n+1) \\
+$\Rightarrow$ Độ phức tạp của thuật toán là $O(n^2)$
+
+\begin{center}
+	\noindent
+	\tornpaper{
+		\parbox{.9\textwidth}{\textcolor{cyan}{\textbf{Bài 24.}} . Đưa ra đánh giá $O$-lớn cho số
+			lượng các toán tử, mỗi toán tử là một
+			phép cộng hoặc phép nhân sử dụng
+			trong phân đoạn sau của một thuật toán
+			(bỏ qua các so sánh sử dụng để kiểm
+			tra các điều kiện trong vòng lặp while)\\
+			i := 1\\
+			t := 0\\
+			while $i\leq n$\\
+			\indent\hspace{1cm}t := t + i\\
+			\indent\hspace{1cm}t := 2i
+		}
+	}
+	\underline{\textbf{Giải}}
+\end{center}
+$\Rightarrow$ Số lượng phép toán là 2n.(n+1) \\
+$\Rightarrow$ Độ phức tạp của thuật toán là $O(n^2)$
+
+
+
+
+
+
+
+\chapter{Lý thuyết đồ thị}
+\section{lý thuyết}
+\subsection{Cần học gì?}
+
+
+\section{Bài tập}
+Phần này không thấy có ví dụ trên slide của thầy nên mình không thêm vào đây
+
+
+\chapter{Đề thi giữa kỳ}
+\section{Đề thi}
+\subsection{Đề 20201}
+{\bf Chú ý:}\\
+=========================================================================
+\begin{enumerate}
+	\item n là chữ số cuối cùng của MSSV, m = (n mod 5)+3, ở đó mod là phép toán lấy phần dư
+	\item Sinh viên phải thay m vào để tính ở từng câu
+	\item Yêu cầu tất cả câu phải có giải thích rõ ràng
+	\item Đề thi gồm 2 trang
+\end{enumerate}
+==========================================================================
+\begin{enumerate}[label = {\bf Câu \arabic*.}]
+	\item Cho R là tập số thực. Hỏi tập R và tập $(m, +\infty)$ có cùng lực lượng không? Giải thích?
+	\item Trên một đường tròn lấy 100m điểm( khoảng cách giữa chúng bằng nhau). Có bao nhiêu cách để kết nối \textbf{các cặp điểm} từ 100m điểm này để tạo thành 50m đonạ thẳng sao cho chúng không cắt nhau? Giải thích?
+	\item Để chuẩn bị cho cuộc Olympic Toán Toàn quốc, Viện Toán thành lập đoàn cán bộ hỗ trợ sinh viên thi từ m + 5 cán bộ của Viện. Hỏi có bao nhiêu cách để có thể chọn được 1 đoàn trưởng, 1 đoàn phó và 3 thành viên.
+	\item Có bao nhiêu số tự nhiên nằm trong khoảng $[100,800]$ hoặc chia hết cho 3 hoặc chia hết cho 4
+	\item Cho đoạn chương trình sau:
+	\begin{lstlisting}
+		produce matrix multiplication(A, B: matrix)
+		for i:= 1 to m
+		for j:=1 to n
+		c_{ij} := 0 
+		for q := 1 to k 
+		c_{ij} = c_{ij} + a_{iq}b_{qj}
+		return C ( C = [c_{ij}] is the product of A and B)
+	\end{lstlisting}
+	\begin{enumerate}
+		\item Thuật toán trên thực hiện bao nhiêu phép cộng và bao nhiêu phép nhân? Giải thích?
+		\item Hãy cho biết độ phức tạp của thuật toán trên.
+	\end{enumerate}
+	\item Cho $k\in N, k \leq 1$ và $S = \{1, 2, 3,..., mk\}$. Khẳng định sau đây là đúng hay sai " Luôn chọn được 2 số từ k + 1 số của tập S sao cho hiệu của chúng tối đa m - 1". Giải thích.
+	\item {\bf Sử dụng công thức hàm sinh} để tìm công thức dưới dạng hiện cho dãy số được cho bởi công thức đệ quy sau: $a_{n+2} = (2m+1)a_{n+1}-m(m+1)a_{n-2}$ ở đó $a_0 = 1, a_1 = 1$
+	\item Có bao nhiêu dãy nhị phân có độ dài m + 3 mà bắt đầu bởi chữ số 1 và không có 2 chữ số 0 liên tiếp đứng cạnh nhau?
+	\item Nhân viên bán hàng tại công ty máy tính xếp máy tính lên giá. Hỏi có bao nhiêu cách để xếp m + 5 máy Macbook và m + 3 máy Thinkpad lên giá sao cho 2 máy Thinkpad không xếp cạnh nhau( lưu ý các máy đều khác nhau không hoàn theo từng số Serie).
+	\item Sử dụng thuật toán nhánh cận để tính.\\
+	$f(x)= 2x_1+3x_2+x_3+mx_4 \rightarrow max\\
+	6x_1+5x_2+7x_3+6x_4 \leq 20, x_i \in (0;1), i = 1,...,4
+	$
+	\begin{center}
+		=======HẾT=======
+	\end{center}
+\end{enumerate}
+\subsection{Đề thi thử 20221}
+=====================================================================
+\begin{center}
+	\textbf{Thời gian làm bài: 60p}
+\end{center}
+=====================================================================
+\begin{enumerate}[label = {\bf Câu \arabic*.}]
+	\item Xét 1 quan hệ trên tập các số nguyên dương thỏa mãn điều kiện $((a,b),(c,d))\in \mathbb{R}$ khi và chỉ khi $a+d=b+c$. Hỏi $\mathbb{R}$ là quan hệ tương đương không ? Giải thích?
+	\item Tìm tập hợp tất cả số nguyên dương nhỏ hơn 10000 sao cho chia hết cho 5 và chia hết cho 4.
+	\item Có bao nhiêu cách chia 50 hộp vào 6 cái tủ sao cho mỗi tủ chứa ít nhất 2 cái hộp.
+	\item Cho dãy số $a_{n+1}=a_n + 3a_{n-1}+2^{n+1}, a_0 = 0, a_1 = 1$. Tìm dãy số trên.
+	\item Đưa ra đánh giá O của hàm $f(n) = (n^4+2n\log_2h)(\log_2(n^2+1)+n) + (5n^2
+	+ \log_2n)(n^4+1)$
+	\item Có bao nhiêu cách chọn 1 giải nhất, 1 giải nhì, 2 bà từ 200 sinh viên tham gia ký thi Olympci tại Đại Học Bách Khoa Hà Nội.
+	\item Trên mạng facebook. CMR trong 10 tài khoản bất kỳ luôn tìm được ít nhất 4 tài khoản sao cho đôi một là bạn bè với nhau hoặc 3 tài khoản sao cho đôi một không là bạn bè.
+	\item Vẽ cây tìm kiếm quay lui để tìm cách đặt 6 quân hậu trên bàn cờ để không có 2 quân hậu bất kỳ ăn được nhau. Biết rằng có 1 con hậu ở hàng 2 cột 1.
+	\item Cho tập $X=\{1,2,3,4\}$ có bao nhiêu ánh xạ $f: X \longrightarrow X$.
+	\item Xác định độ phức tạp của đoạn mã giả sau:
+	\begin{lstlisting}
+		for i = 0 to n - 3:
+			for j = 1 to i+3:
+				if A[i] > A[j] then swap(A[i], A[j])
+				// swap(A[i], A[j]) la O(1)
+	\end{lstlisting}
+	\begin{center}
+		=======HẾT=======
+	\end{center}
+\end{enumerate}
+
+\begin{enumerate}[label = {\bf Câu \arabic*.}]
+	\item 
+	\begin{itemize}
+		\item[+)] Xét $(x,y) \in \mathbb{Z}^* \times \mathbb{Z}^*$\\
+		Ta có: $((x,y);(x,y) \in \mathbb{R} \Rightarrow \mathbb{R}$ có tính chất phản xạ (1).
+		\item[+)] Xét với $\forall (x_1,y_1) \in (\mathbb{Z\times Z})\\
+		(x_2,y_2) \in (\mathbb{Z\times Z})
+		$\\
+		Khi $(x_1,y_1);(x_2,y_2)\in \mathbb{R} \Rightarrow x_1+y_2=x_2+y_1\\
+		\Rightarrow (x_2,y_2),(x_1,y_1) \mathbb{R \rightarrow R}$ có tính chất đối xứng(2)
+		\item[+)] Xét $\begin{cases}
+			((x_1,y_1);(x_2,y_2) \in \mathbb{R}\\
+			((x_2,y_2);(x_3,y_3) \in \mathbb{R}
+		\end{cases} \Rightarrow
+		\begin{cases}
+			x_1+y_2=x_2+y_1\\
+			x_2+y_3=x_3+y_2
+		\end{cases}$       
+		\begin{itemize}
+			\item[$\rightarrow$] $x_1+y_2+x_2+y_3=x_2+y_1+x_3+y_2$
+			\item[$\rightarrow$] $x_1+y_3=y_1+x_3$
+			\item[$\rightarrow$] $(x_1,y_1)(x_3,y_3)$
+			\item[$\rightarrow$] $\mathbb{R}$ có tính chất bắc cầu (3). 
+		\end{itemize}
+		$\Rightarrow (1)(2)(3) \mathbb{R}$ là quan hệ tương đương 
+	\end{itemize}
+	\item 
+	A: tập các số chia hết cho 5\\
+	B: tập các số chia hết cho 4\\
+	\dots\\
+	$|A\cap B |=3999$
+	\item Số cách chia là số nghiệm nguyên của phương trình:
+	\begin{center}
+		$x_1+x_2+x_3+x_4+x_5+x_6=50$
+	\end{center}
+	Với $x_1\leq 2,x_2\leq 2, x_3\leq 2, x_4\leq 2, x_5\leq 2, x_6\leq 2$. Đặt $y_i=x_i-2 \leq 0$
+	\begin{center}
+		$y_1+y_2+y_3+y_4+y_5+ y_6=38$
+	\end{center}
+	$\Rightarrow$ Số cách chọn là $C_{38+6-1}^{38}=C_{43}^{38}.$
+	\item 
+	$\begin{cases}
+		a_{n+1}=a_n+3a_{n-1}+2.2^n\\
+		a_0 = 0, a_1 = 1.
+	\end{cases}
+	\\
+	\Rightarrow \begin{cases}
+		a_{n+2} = a_{n+1} + 3a_{n} +2^{n+2}\\
+		a_0 = 0, a_1 = 1
+	\end{cases}$
+	\\$ f(x) = \displaystyle \sum_{n = 0}^{+\infty} a_nx^n
+	\\ \indent\hspace{0.8cm} = a_1x+ \displaystyle\sum_{n=2}^{+\infty}(a_{n-1}+3a_{n-2}+2^n)x^n
+	\\ \indent\hspace{0.8cm} = x+\displaystyle\sum_{n=2}^{+\infty}a_{n-1}x^n+ 3\displaystyle \sum_{n = 2}^{+\infty} a_{n-2}x^n + 2\displaystyle \sum_{n=2}^{+\infty} 2^nx^n$
+	$ \\ f(x) = x + x\displaystyle \sum_{n=2}^{+\infty} a_{n-2}x^{n-1} + 3x^2\displaystyle \sum_{n=2}^{+\infty} a_{n-2} x^{n-2} + 2\displaystyle \sum_{n=2}^{+\infty} 2^nx^n$\\
+	$\Rightarrow f(x) = x +f(x)(x+3x^2)+\dfrac{2}{1-2x}\\
+	\Rightarrow f(x)(-3x^2-x+1)=x+\dfrac{2}{1-2x}\\
+	\Rightarrow f(x) = \dfrac{-2x^2+x+2}{(-3x^2-x+1)(1-2x)}$ 
+	\\ Bài này có thể giải tiếp nhưng nghiệm khá lẻ lúc chữa bài thầy cx bảo cho đề nhưng chưa thử lại kết quả.
+	\item 
+	$f(n) = (n^4+2n\log_2h)(\log_2(n^2+1)+n) + (5n^2+ \log_2n)(n^4+1)\\
+	\indent\hspace{0.7cm} n^4\log_2(n^2+1)+n^5+2n\log_2n\log_2(n^2+1)
+	\indent\hspace{0.7cm} = O(n^6)$
+	\item Chọn:\begin{itemize}
+		\item[] 1 giải nhất $C^1_{200}$
+		\item[] 1 giải nhì $C^1_{199}$
+		\item[] 2 giải ba $C^2_{197}$
+	\end{itemize}
+	Theo quy tắc nhân $\rightarrow$ Có $\medspace C^1_{200}C^1_{199}C^2_{197}$
+	\item \indent\hspace{1cm} Giả sử 10 tài khoản là 10 điểm, các đường thẳng nối 2 điểm bất kỳ nếu là màu đỏ thì là bạn, màu xanh thì không là bạn.\\
+	\indent\hspace{1cm} Chọn  điểm bất kỳ. Nối điểm này với 9 điểm còn lại $\Rightarrow$ có 9  đường thẳng.
+	\indent Vì chỉ có 2 màu nên theo nguyên lý Dirichlet có ít nhất 5 đường được tô màu xanh.
+	Giả sử các đường đó là $A_i$ với i = $\overline{1,5}$.
+	\begin{itemize}
+		\item Nếu ít nhất 1 trong các đoạn trên được tô màu xanh thì 3 người đôi một không kết bạn.
+		\item Nếu tất cả các đường còn lại tô màu đỏ thì $\exists$ 4 người đôi một kết bạn
+	\end{itemize}
+	$\rightarrow$ đpcm.\\
+	Minh họa:
+	\begin{center}
+		\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+		\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+			\draw [color={rgb, 255:red, 184; green, 233; blue, 134 }  ,draw opacity=1 ]   (100,130) -- (220,56) ;
+			\draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ]   (100,130) -- (220,102) ;
+			\draw [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ]   (100,130) -- (220,144) ;
+			\draw [color={rgb, 255:red, 189; green, 16; blue, 224 }  ,draw opacity=1 ]   (100,130) -- (221,186) ;
+			\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (100,130) -- (220,241) ;
+			\draw    (220,56) -- (220,241) ;
+			\draw (85,117) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,opacity=1 ] [align=left] {A};
+			\draw (224,39) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 184; green, 233; blue, 134 }  ,opacity=1 ] [align=left] {A1};
+			\draw (226,91) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,opacity=1 ] [align=left] {A2};
+			\draw (227,131) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,opacity=1 ] [align=left] {A3};
+			\draw (226,175) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 189; green, 16; blue, 224 }  ,opacity=1 ] [align=left] {A4};
+			\draw (226,234) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ] [align=left] {A5};
+		\end{tikzpicture}
+	\end{center}
+	\item - Đặt các ô hàng ngang lần lượt là A, B, C, D, E, F\\
+	- Đặt các ô hàng dọc lần lượt là 1, 2, 3, 4, 5, 6.
+	- Áp dụng thuật toán quay lui vẽ các trường hợp xảy ra (Có thể tham khảo giáo trình trang 98.)
+	
+	$\rightarrow$ $\{A_1, B_4, C_6, D_1, E_3, F_5\}$.
+	\item Kết quả là $4^4$.
+	\item 
+	$-1 \leq i \leq n - 3\\
+	1 \leq j \leq n $\\
+	Số lượng phép toán $n(n-3).1.O(1)$\\
+	$\Rightarrow$ Độ phức tạp $O(n^2).$
+	
+\end{enumerate}
+
+\subsection{Đề thi 20221}
+\begin{center}
+	==========***==========\\
+	\textbf{ĐỀ 1}
+\end{center}
+\indent Họ và tên: \hspace{10cm}Mã sinh viên:
+\begin{enumerate}[label = {\bf Câu \arabic*.}]
+	\item Trên tập $A=\{-1,0,2,3,4\}$ xét quan hệ hai ngôi như sau $x R y = x^2-3x=y^-3y$
+	\begin{enumerate}[label = \alph*)]
+		\item Liệt kê các phần tử của quan hệ R trên tập A.
+		\item Xây dựng một tập X có vô hạn phần tử để R là một quan hệ trên X. Giải thích.
+	\end{enumerate}
+	\item Xét tập hợp $S=\{0,1,2,3,5,8,9\}$. Tìm các số có 4 chữ số khác nhau hoặc chia hết cho 2 hoặc chia hết cho 5.
+	\item Hỏi có bao nhiêu cách chia 18 hộp bánh cho 3 học sinh sao cho mỗi bạn nhận được ít nhất 3 hộp bánh.
+	\item Sử dụng phương pháp hàm sinh để tìm công thức dưới dạng hiện cho dãy cho bởi công thức đệ uy sau: $a_{n+1}=2a_n+3a_{n-1}$ với $a_0=1,a_1=1$
+	\item Cho các số nguyên dương $m_1,m_2$ và n thỏa mãn $n<m_1,m_2.$
+	\begin{center}
+		$\displaystyle \sum_{k=0}^n \dbinom{m_1}{k}\dbinom{m_2}{n-k}=\dbinom{m_1+m_2}{n}$
+	\end{center}
+	\begin{enumerate}[label = \alph*)]
+		\item Chỉ ra một ví dụ cụ thể với các số $m_1,m_2,n$ để khẳng định đẳng thức đúng.
+		\item Sử dụng kiến thức phép đếm và tổ hợp chứng minh đẳng thức trên.
+	\end{enumerate}
+	\item Cho $m \geq 4$ số nguyên $a_1,a_2,a_3,...,a_m.$ Chứng minh rằng luôn tồn tại số nguyên k, l thỏa mãn $0\leq k <l\leq m$ sao cho $a_{k+1}+a_{k+2}+\cdots+a_i$ chia hết cho m. Đưa ra ví dụ cụ thể?
+	\item Có bao nhiêu cách xếp 12 sinh viên nam và 4 sinh viên nữ thành một hàng ngang sao cho không có hai sinh viên nữ đứng cạnh nhau?
+	\item Giải bài toán cái túi bằng thuật toán nhánh cận\\
+	$f(x) = 6x_1+2x_2+4x_3+5x_4\rightarrow max$\\
+	$3x_1+5x_2+4x_3+6x_4 \leq 15, x_i \in \{ 0,1\}, i = 1...4$
+\end{enumerate}
+\begin{center}
+	==========HẾT===========
+\end{center}
+
+\chapter{Tìm kiếm trên đồ thị và ứng dụng-tìm đường đi ngắn nhất}
+\section{1}
+\section{2}
+\chapter{Cây khung nhỏ nhất}
+\section{1}
+\section{2}
+\chapter{Đường Euler}
+\section{1}
+\section{2}
+
+\end{document}
+
